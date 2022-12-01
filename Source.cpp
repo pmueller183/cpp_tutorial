@@ -3,10 +3,19 @@ using namespace std;
 
 int main()
 {
-	double const myval = -33.3;
+	string my_text = "this be a test";
+	double const my_val = -33.3;
 	cout << "Hollow World!\n";
 	cout << "I be learning C++\n";
-	cout << "myval be " << myval << endl;
+	cout << "my_val be " << my_val << endl;
+	cout << "my_text be >" << my_text << "<\n";
+
+	int aa;
+	cout << endl;
+	cout << "Type in a number: ";
+	cin >> aa;
+	cout << "You typed " << aa << endl;
+
 	return 0;
 } // main
 
