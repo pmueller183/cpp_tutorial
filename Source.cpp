@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <string>
 using namespace std;
 
@@ -62,10 +63,29 @@ int main()
 	cout << (9 > 10) << endl;
 	cout << bool(9 > 10) << endl;
 
-	string my_strs[] = {"This", "be", "a", "test"};
-	cout << sizeof(my_strs) / sizeof(string) << ": ";
+	string my_strs[] = {"This", "be", "a", "test", "aldsjf"};
+	cout << sizeof(my_strs) / sizeof(my_strs[0]) << "(" << _countof(my_strs) << "): ";
 	for(string ii : my_strs)
 		cout << ii << " ";
+
+	
+	cout << endl;
+	int my_ints[4][2] = 
+	{
+		{ 00, 01 },
+		{ 10, 11 },
+		{ 20, 21 },
+		{ 30, 31 }
+	};
+
+	for(auto &a : my_ints)
+	{
+		for(auto &b : a)
+			cout << setw(2) << setfill('0') << b << " ";
+		cout << endl;
+	}
+			
+
 	
 
 
