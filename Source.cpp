@@ -11,31 +11,48 @@ int main()
 	cout << "my_val be " << my_val << endl;
 	cout << "my_text be >" << my_text << "<\n";
 
+#if 0
 	int aa;
 	cout << endl;
 	cout << "Type in a number: ";
 	cin >> aa;
 	cout << "You typed " << aa << endl;
 	cout << endl;
+#endif
 
 	float const fval  = 35e3;
 	double const dval = 12e4;
 
 	cout << "fval " << fval << " dval " << dval << endl;
 
+	string zeroth_name;
 	string first_name;
-	string second_name;
 	string full_name;
 
-	first_name = "John";
-	second_name = "Doe";
+	zeroth_name = "John";
+	first_name = "Peanut";
 
-	full_name = first_name + " " + second_name;
+	full_name = zeroth_name + " " + first_name;
 	cout << '>' << full_name << "<\n";
 	full_name = "";
 	cout << '>' << full_name << "<\n";
-	full_name = first_name + ' ' + second_name;
+	full_name = zeroth_name + ' ' + first_name;
 	cout << '>' << full_name << "<\n";
+	full_name = "";
+	full_name.append(zeroth_name);
+	full_name.append(" ");
+	full_name.append(first_name);
+	cout << '>' << full_name << "<\n";
+	cout << "full_name length is " << full_name.length() << endl;
+
+	full_name[2] = 'n';
+	cout << full_name << " length is " << full_name.length() << endl;
+
+	int ii;
+	for(ii = 0; ii < full_name.length(); ++ii)
+		cout << full_name[ii] << endl;
+
+
 
 
 
