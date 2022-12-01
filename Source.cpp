@@ -48,14 +48,24 @@ int main()
 	full_name[2] = 'n';
 	cout << full_name << " length is " << full_name.length() << endl;
 
-	int ii;
-	for(ii = 0; ii < full_name.length(); ++ii)
+	for(int ii = 0; ii < full_name.length(); ++ii)
 		cout << full_name[ii] << endl;
 
+#if 0
 	cout << "Type in your full name: ";
 	getline(cin, full_name);
 	cout << full_name << " length is " << full_name.length() << endl;
+#endif
 
+	cout << (10 > 9) << endl;
+	cout << bool(10 > 9) << endl;
+	cout << (9 > 10) << endl;
+	cout << bool(9 > 10) << endl;
+
+	string my_strs[] = {"This", "", "a", "test", "again", "foobar"};
+	for(string ii : my_strs)
+		cout << ii << " ";
+	
 
 
 
