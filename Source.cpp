@@ -62,7 +62,8 @@ int main()
 	cout << (9 > 10) << endl;
 	cout << bool(9 > 10) << endl;
 
-	string my_strs[] = {"This", "", "a", "test", "again", "foobar"};
+	string my_strs[] = {"This", "be", "a", "test"};
+	cout << sizeof(my_strs) / sizeof(string) << ": ";
 	for(string ii : my_strs)
 		cout << ii << " ";
 	
