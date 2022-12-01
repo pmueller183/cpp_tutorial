@@ -52,6 +52,10 @@ int main()
 	for(ii = 0; ii < full_name.length(); ++ii)
 		cout << full_name[ii] << endl;
 
+	cout << "Type in your full name: ";
+	getline(cin, full_name);
+	cout << full_name << " length is " << full_name.length() << endl;
+
 
 
 
