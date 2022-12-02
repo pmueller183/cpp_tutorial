@@ -3,6 +3,11 @@
 #include <string>
 using namespace std;
 
+static void _show_name_hf(string const &the_name)
+{
+	cout << the_name << endl;
+} // _show_name_hf
+
 int main()
 {
 	string my_text = "this be a test";
@@ -65,7 +70,7 @@ int main()
 
 	string my_strs[] = {"This", "be", "a", "test", "aldsjf"};
 	cout << sizeof(my_strs) / sizeof(my_strs[0]) << "(" << _countof(my_strs) << "): ";
-	for(string ii : my_strs)
+	for(string const &ii : my_strs)
 		cout << ii << " ";
 
 	
@@ -85,6 +90,15 @@ int main()
 		cout << endl;
 	}
 
+	cout << endl;
+
+	_show_name_hf("a name");
+	_show_name_hf("another name");
+	_show_name_hf(zeroth_name);
+	_show_name_hf(full_name);
+	for(string const &ii : my_strs)
+		_show_name_hf(ii);
+
+
 	return 0;
 } // main
-
