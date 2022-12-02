@@ -84,12 +84,6 @@ int main()
 			cout << setw(2) << setfill('0') << b << " ";
 		cout << endl;
 	}
-			
-
-	
-
-
-
 
 	return 0;
 } // main
