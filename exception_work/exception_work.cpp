@@ -4,8 +4,48 @@
 #include <iostream>
 using namespace std;
 
+class tester_cls
+{
+public:
+	tester_cls()  { cout << "constructing tester_cls\n"; }
+	~tester_cls() { cout << "destructing tester_cls\n";}
+}; // tester_cls
+
+class counter_test_cls
+{
+	static int count_c;
+	int id_m;
+
+public:
+	counter_test_cls() 
+	{
+		id_m = count_c;
+		++count_c;
+		cout << "Constructing object number " << id_m << endl;
+		if (4 == id_m)
+			throw 4;
+	} // ctor
+	~counter_test_cls() { cout << "Destructing object number " << id_m << endl; }
+}; // counter_test_cls
+
+int counter_test_cls::count_c = 0;
+
+static void _counter_test_cls_hf()
+{
+	try
+	{
+		counter_test_cls array[8];
+	}
+	catch (int &ii) 
+	{
+		cout << "Caught " << ii << endl;
+	}
+	cout << endl;
+} // _counter_test_cls_hf
+
 void _try_catch_work_hf()
 {
+	tester_cls aa;
 	char the_err;
 	cout << "a: int error\nb: double error\nc: string error\nd: other error\n"
 			"e: no error\n";
@@ -29,6 +69,8 @@ void _try_catch_work_hf()
 		err_str += "<";
 		throw err_str;
 	} // bad option
+
+	cout << "\ngot to the end of input function\n\n";
 } // _try_catch_work_hf
 
 void _try_outside_catch_work_hf()
@@ -52,6 +94,8 @@ void _try_outside_catch_work_hf()
 int main()
 {
 	bool is_good;
+
+	_counter_test_cls_hf();
 
 	try
 	{
