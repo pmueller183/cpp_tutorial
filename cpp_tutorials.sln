@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cpp_restart", "cpp_restart\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fstream_test", "fstream\fstream.vcxproj", "{0DF4A16E-0ACC-4DD1-BD78-968DBDC87F6E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "exception_work", "exception_work\exception_work.vcxproj", "{D009CE03-1D8F-4A0B-A0B7-46E4B128B0ED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{0DF4A16E-0ACC-4DD1-BD78-968DBDC87F6E}.Debug|x64.Build.0 = Debug|x64
 		{0DF4A16E-0ACC-4DD1-BD78-968DBDC87F6E}.Release|x64.ActiveCfg = Release|x64
 		{0DF4A16E-0ACC-4DD1-BD78-968DBDC87F6E}.Release|x64.Build.0 = Release|x64
+		{D009CE03-1D8F-4A0B-A0B7-46E4B128B0ED}.Debug|x64.ActiveCfg = Debug|x64
+		{D009CE03-1D8F-4A0B-A0B7-46E4B128B0ED}.Debug|x64.Build.0 = Debug|x64
+		{D009CE03-1D8F-4A0B-A0B7-46E4B128B0ED}.Release|x64.ActiveCfg = Release|x64
+		{D009CE03-1D8F-4A0B-A0B7-46E4B128B0ED}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
