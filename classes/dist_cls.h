@@ -21,18 +21,36 @@ public:
 	{
 		feet_m = feet;
 		inches_m = inches;
-	}
+		normalize();
+	} // dist_cls
 	
 	friend ostream &operator<<(ostream &output, dist_cls const &the_dist) 
 	{
-		output << "F : " << the_dist.feet_m << " I : " << the_dist.inches_m;
+		output << the_dist.feet_m << " feet, " << the_dist.inches_m << " inches";
 		return output;
 	}
 
 	friend istream &operator>>(istream &input, dist_cls &the_dist) 
 	{
 		input >> the_dist.feet_m >> the_dist.inches_m;
+		the_dist.normalize();
 		return input;
 	}
+
+private:
+	void normalize()
+	{
+		while (inches_m < 0)
+		{
+			--feet_m;
+			inches_m += 12;
+		}
+		while (inches_m >= 12)
+		{
+			++feet_m;
+			inches_m -= 12;
+		}
+	} // normalize
+
 }; // dist_cls
 
