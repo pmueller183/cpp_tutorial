@@ -1,9 +1,5 @@
 //345678911234567892123456789312345678941234567895123456789612345678971234567898123456-
-
-#include <iostream>
-
-#include "box_cls.h"
-#include "dist_cls.h"
+#include "stdafx.h"
 
 int main() 
 {
