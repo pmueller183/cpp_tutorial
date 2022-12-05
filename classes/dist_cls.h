@@ -9,6 +9,7 @@ public:
 	dist_cls(int feet, int inches);
 	friend ostream &operator<<(ostream &output, dist_cls const &the_dist);
 	friend istream &operator>>(istream &input, dist_cls &the_dist);
+	int &operator[](int ndx);
 
 private:
 	int feet_m;             // 0 to infinite
