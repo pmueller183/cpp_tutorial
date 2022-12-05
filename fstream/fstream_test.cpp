@@ -1,3 +1,4 @@
+//345678911234567892123456789312345678941234567895123456789612345678971234567898123456-
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -36,6 +37,5 @@ int main()
 	string const out_name_k = "copy_of_fstream_test.txt";
 	_copy_file_hf(inp_path_k, out_name_k);
 	cout << "hopefully created " << out_name_k << endl;
-
 } // main
 
