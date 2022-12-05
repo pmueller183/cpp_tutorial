@@ -26,6 +26,13 @@ int main()
 		std::numeric_limits<unsigned long long int>::min() << endl;
 	std::cout << "unsigned long long int max " <<
 		std::numeric_limits<unsigned long long int>::max() << endl;
+	std::cout << endl;
+
+	std::cout << "float min " << std::numeric_limits<float>::min() << endl;
+	std::cout << "float max " << std::numeric_limits<float>::max() << endl;
+	std::cout << "double min " << std::numeric_limits<double>::min() << endl;
+	std::cout << "double max " << std::numeric_limits<double>::max() << endl;
+	std::cout << endl;
 
 } // main
 
