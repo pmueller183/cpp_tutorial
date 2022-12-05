@@ -4,7 +4,7 @@
 static void _caller_hf()
 {
 	dist_cls dist0th(11, 14), dist1st(5, -5), dist2nd;
-
+	
 	cout << "Enter the value of object: ";
 	cin >> dist2nd;
 	cout << "zeroth dist_cls : " << dist0th << endl;
@@ -23,11 +23,12 @@ int main()
 	}
 	catch(exception const &e)
 	{
-		cerr << e.what() << endl;
+		cerr << "Exception caught: >" << e.what() << "<" << endl;
 	}
 	catch(...)
 	{
-		cerr << "unknown execption; someone is not using std::exception";
+		cerr << "unknown exception; someone is not using std::exception";
+		throw;
 	}
 	return 0;
 } // main

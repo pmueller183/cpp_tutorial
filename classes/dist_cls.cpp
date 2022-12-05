@@ -5,7 +5,7 @@ dist_cls::dist_cls()
 {
 	feet_m = 0;
 	inches_m = 0;
-}
+} // default ctor
 dist_cls::dist_cls(int feet, int inches)
 {
 	feet_m = feet;
@@ -17,14 +17,14 @@ ostream &operator<<(ostream& output, dist_cls const& the_dist)
 {
 	output << the_dist.feet_m << " feet, " << the_dist.inches_m << " inches";
 	return output;
-}
+} // ostream
 
 istream &operator>>(istream& input, dist_cls& the_dist)
 {
 	input >> the_dist.feet_m >> the_dist.inches_m;
 	the_dist.normalize();
 	return input;
-}
+} // istream
 
 void dist_cls::normalize()
 {
@@ -55,4 +55,3 @@ int &dist_cls::operator[](int ndx)
 	else
 		return inches_m;
 } // operator []
-
