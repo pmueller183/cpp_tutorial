@@ -7,32 +7,65 @@ using namespace std;
 
 int main()
 {
-	std::cout << "int min " << std::numeric_limits<int>::min() << endl;
-	std::cout << "int max " << std::numeric_limits<int>::max() << endl;
-	std::cout << "unsigned int min " << std::numeric_limits<unsigned int>::min() << endl;
-	std::cout << "unsigned int max " << std::numeric_limits<unsigned int>::max() << endl;
-	std::cout << endl;
 
-	std::cout << "long int min " << std::numeric_limits<long int>::min() << endl;
-	std::cout << "long int max " << std::numeric_limits<long int>::max() << endl;
-	std::cout << endl;
+	cout << "a long string\n\n";
 
-	std::cout << "long long int min " <<
-			std::numeric_limits<long long int>::min() << endl;
-	std::cout << "long long int max " <<
-			std::numeric_limits<long long int>::max() << endl;
+	cout << "int min " << numeric_limits<int>::min() << endl;
+	cout << "int max " << numeric_limits<int>::max() << endl;
+	cout << "unsigned int min " << numeric_limits<unsigned int>::min() << endl;
+	cout << "unsigned int max " << numeric_limits<unsigned int>::max() << endl;
+	cout << endl;
 
-	std::cout << "unsigned long long int min " <<
-		std::numeric_limits<unsigned long long int>::min() << endl;
-	std::cout << "unsigned long long int max " <<
-		std::numeric_limits<unsigned long long int>::max() << endl;
-	std::cout << endl;
+	cout << "long int min " << numeric_limits<long int>::min() << endl;
+	cout << "long int max " << numeric_limits<long int>::max() << endl;
+	cout << endl;
 
-	std::cout << "float min " << std::numeric_limits<float>::min() << endl;
-	std::cout << "float max " << std::numeric_limits<float>::max() << endl;
-	std::cout << "double min " << std::numeric_limits<double>::min() << endl;
-	std::cout << "double max " << std::numeric_limits<double>::max() << endl;
-	std::cout << endl;
+	cout << "long long int min " <<
+			numeric_limits<long long int>::min() << endl;
+	cout << "long long int max " <<
+			numeric_limits<long long int>::max() << endl;
+
+	cout << "unsigned long long int min " <<
+		numeric_limits<unsigned long long int>::min() << endl;
+	cout << "unsigned long long int max " <<
+		numeric_limits<unsigned long long int>::max() << endl;
+	cout << endl;
+
+	cout << "float min " << numeric_limits<float>::min() << endl;
+	cout << "float max " << numeric_limits<float>::max() << endl;
+	cout << "double min " << numeric_limits<double>::min() << endl;
+	cout << "double max " << numeric_limits<double>::max() << endl;
+	cout << endl;
+
+	{
+		int nn[10]; // nn is an array of 10 integers
+
+		// initialize elements of array n to 0          
+		for (int ii = 0; ii < 10; ++ii)
+			nn[ii] = ii + 100; // set element at location i to i + 100
+
+		cout << "element" << setw(13) << "value" << endl;
+
+		for (int ii = 0; ii < 10; ++ii)
+			cout << setw(7) << ii << setw(13) << nn[ii] << endl;
+		cout << endl;
+	}
+	{
+		string str0;
+		string str1;
+		string str2;
+
+		str0 = "George";
+		str1 = "Wingate";
+
+		str2 = str0 + " " + str1;
+
+		cout << ">" << str2 << "< ";
+		cout << "length of " << str2.length();
+
+
+		cout << endl;
+	}
 
 } // main
 
