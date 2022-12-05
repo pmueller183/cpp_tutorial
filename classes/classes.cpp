@@ -2,8 +2,18 @@
 
 #include <iostream>
 
-int main()
-{
-    std::cout << "Hello World!\n";
-}
+//#include "box_cls.h"
+#include "dist_cls.h"
 
+int main() 
+{
+	dist_cls dist0th(11, 10), dist1st(5, -5), dist2nd;
+
+	cout << "Enter the value of object: ";
+	cin >> dist2nd;
+	cout << "zeroth dist_cls : " << dist0th << endl;
+	cout << "first  dist_cls : " << dist1st << endl;
+	cout << "second dist_cls : " << dist2nd << endl;
+
+	return 0;
+}
