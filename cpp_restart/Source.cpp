@@ -2,8 +2,34 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <limits>
 using namespace std;
 
+int main()
+{
+	std::cout << "int min " << std::numeric_limits<int>::min() << endl;
+	std::cout << "int max " << std::numeric_limits<int>::max() << endl;
+	std::cout << "unsigned int min " << std::numeric_limits<unsigned int>::min() << endl;
+	std::cout << "unsigned int max " << std::numeric_limits<unsigned int>::max() << endl;
+	std::cout << endl;
+
+	std::cout << "long int min " << std::numeric_limits<long int>::min() << endl;
+	std::cout << "long int max " << std::numeric_limits<long int>::max() << endl;
+	std::cout << endl;
+
+	std::cout << "long long int min " <<
+			std::numeric_limits<long long int>::min() << endl;
+	std::cout << "long long int max " <<
+			std::numeric_limits<long long int>::max() << endl;
+
+	std::cout << "unsigned long long int min " <<
+		std::numeric_limits<unsigned long long int>::min() << endl;
+	std::cout << "unsigned long long int max " <<
+		std::numeric_limits<unsigned long long int>::max() << endl;
+
+} // main
+
+#if 0
 static void _show_name_hf(string const &the_name)
 {
 	cout << the_name << endl;
@@ -103,3 +129,4 @@ int main()
 
 	return 0;
 } // main
+#endif

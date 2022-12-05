@@ -1,6 +1,7 @@
 //345678911234567892123456789312345678941234567895123456789612345678971234567898123456-
 
 #include <iostream>
+#include <stdexcept>
 using namespace std;
 
 class tester_cls
@@ -21,8 +22,8 @@ public:
 		id_m = count_c;
 		++count_c;
 		cout << "Constructing object number " << id_m << endl;
-		if (4 == id_m)
-			throw 4;
+		if (2 == id_m)
+			throw 2;
 	} // ctor
 	~counter_test_cls() { cout << "Destructing object number " << id_m << endl; }
 }; // counter_test_cls
@@ -42,7 +43,7 @@ static void _counter_test_cls_hf()
 	cout << endl;
 } // _counter_test_cls_hf
 
-void _try_catch_work_hf()
+void _try_catch_work_hf() 
 {
 	tester_cls aa;
 	char the_err;
@@ -51,7 +52,7 @@ void _try_catch_work_hf()
 	cin >> the_err;
 
 	if('a' == the_err)
-		throw 7;
+		throw invalid_argument("int arg 7");
 	else if('b' == the_err)
 		throw -13.3;
 	else if('c' == the_err)
@@ -74,7 +75,6 @@ void _try_catch_work_hf()
 
 void _try_outside_catch_work_hf()
 {
-
 	try
 	{
 		_try_catch_work_hf();
@@ -82,11 +82,6 @@ void _try_outside_catch_work_hf()
 	catch(double)
 	{
 		cout << "caught double error; made good\n";
-	}
-	catch(...)
-	{
-		cout << "caught error; rethrowing\n";
-		throw;
 	}
 } // _try_outside_catch_work_hf
 
@@ -116,6 +111,11 @@ int main()
 		is_good = false;
 		cout << "string error >" << str_val << "<\n";
 	} // catch string
+	catch(exception const &e)
+	{
+		is_good = false;
+		cout << e.what() << endl;
+	} // catch exception
 	catch(...)
 	{
 		is_good = false;
