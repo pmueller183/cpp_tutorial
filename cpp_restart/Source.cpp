@@ -61,8 +61,9 @@ int main()
 		str2 = str0 + " " + str1;
 
 		cout << ">" << str2 << "< ";
-		cout << "length of " << str2.length();
+		cout << "length of " << str2.length() << endl;
 
+		cout << "addresses: " << &str0 << " " << &str1 << " " << &str2 << endl;
 
 		cout << endl;
 	}
