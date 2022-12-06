@@ -7,10 +7,18 @@ public:
 	// required constructors
 	dist_cls();
 	dist_cls(int feet, int inches);
-	friend ostream &operator<<(ostream &output, dist_cls const &the_dist);
-	friend istream &operator>>(istream &input, dist_cls &the_dist);
 	int &operator[](int ndx);
 	int const &operator[](int ndx) const;
+
+	int &feet();
+	int const &feet() const;
+	int &inches();
+	int const &inches() const;
+
+	string to_string() const;
+
+	friend ostream &operator<<(ostream &output, dist_cls const &the_dist);
+	friend istream &operator>>(istream &input, dist_cls &the_dist);
 
 private:
 	mutable int feet_m;             // 0 to infinite
