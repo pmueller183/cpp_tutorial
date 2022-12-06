@@ -10,34 +10,39 @@ dist_cls::dist_cls(int feet, int inches)
 {
 	feet_m = feet;
 	inches_m = inches;
-	normalize();
+	is_dirty_m = true;
 } // dist_cls
 
-ostream &operator<<(ostream& output, dist_cls const& the_dist)
+ostream &operator<<(ostream &output, dist_cls const &the_dist)
 {
+	the_dist.normalize();
 	output << the_dist.feet_m << " feet, " << the_dist.inches_m << " inches";
 	return output;
 } // ostream
 
-istream &operator>>(istream& input, dist_cls& the_dist)
+istream &operator>>(istream &input, dist_cls &the_dist)
 {
 	input >> the_dist.feet_m >> the_dist.inches_m;
-	the_dist.normalize();
+	the_dist.is_dirty_m = true;
 	return input;
 } // istream
 
-void dist_cls::normalize()
+void dist_cls::normalize() const
 {
-	while(inches_m < 0)
+	if(is_dirty_m)
 	{
-		--feet_m;
-		inches_m += 12;
-	}
-	while(inches_m >= 12)
-	{
-		++feet_m;
-		inches_m -= 12;
-	}
+		while(inches_m < 0)
+		{
+			--feet_m;
+			inches_m += 12;
+		}
+		while(inches_m >= 12)
+		{
+			++feet_m;
+			inches_m -= 12;
+		}
+		is_dirty_m = false;
+	} // is_dirty_m
 } // normalize
 
 int &dist_cls::operator[](int ndx)
@@ -47,11 +52,32 @@ int &dist_cls::operator[](int ndx)
 		string err_str;
 		err_str = string("dist_cls[] supports 0 (feet) or 1 (inches), not ") +
 				to_string(ndx);
-		throw domain_error(err_str);
+		throw out_of_range(err_str);
 	}
+
+	normalize();
+	is_dirty_m = true;
 
 	if(0 == ndx)
 		return feet_m;
 	else
 		return inches_m;
 } // operator []
+
+int const &dist_cls::operator[](int ndx) const
+{
+	if(ndx < 0 || ndx > 1)
+	{
+		string err_str;
+		err_str = string("dist_cls[] supports 0 (feet) or 1 (inches), not ") +
+				to_string(ndx);
+		throw out_of_range(err_str);
+	}
+
+	normalize();
+
+	if(0 == ndx)
+		return feet_m;
+	else
+		return inches_m;
+} // operator [] const

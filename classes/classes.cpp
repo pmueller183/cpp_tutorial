@@ -41,25 +41,46 @@ static void _readwrite_hf()
 	cout << data << endl;
 } // _readwrite_hf()
 
+static void _caller_const_hf(dist_cls *foo, dist_cls const &ans)
+{
+	cout << "foo " << *foo << endl;
+	(*foo)[1] = (*foo)[1] + 23;
+	cout << "foo " << *foo << endl;
+	(*foo)[1] = ans[1] + 23;
+	cout << "foo " << *foo << endl;
+	cout << endl;
+
+	cout << "ans " << ans << endl;
+//	ans[1] = ans[1] + 23;
+//	cout << endl << "ans " << ans << endl;
+
+} // _caller_const_hf
+
 static void _caller_hf()
 {
-	dist_cls dist0th(11, 14), dist1st(5, -5), dist2nd;
+	dist_cls dist0th(-1, 14), dist1st(5, -5), dist2nd;
 	
+	_caller_const_hf(&dist0th, dist1st);
+
 	cout << "Enter the value of object: ";
 	cin >> dist2nd;
 	cout << "zeroth dist_cls : " << dist0th << endl;
 	cout << "first  dist_cls : " << dist1st << endl;
 	cout << "second dist_cls : " << dist2nd << endl;
-	cout << dist0th[0] << endl;
-	cout << dist0th[1] << endl;
-	cout << dist0th[-1] << endl;
+	dist1st[1] = 3;
+	cout << "after assignment 3 inches first dist_cls : " << dist1st << endl;
+	dist1st[1] = 23;
+	cout << "after assignment 23 inches first dist_cls : " << dist1st << endl;
+	cout << "dist0th[0] " << dist0th[0] << endl;
+	cout << "dist1st[1] " << dist0th[1] << endl;
+	cout << "dist1st[2] " << dist0th[2] << endl;
 } // _caller_hf
 
 int main()
 {
 	try
 	{
-		_readwrite_hf();
+		_caller_hf();
 	}
 	catch(exception const &e)
 	{

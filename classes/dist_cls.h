@@ -10,10 +10,12 @@ public:
 	friend ostream &operator<<(ostream &output, dist_cls const &the_dist);
 	friend istream &operator>>(istream &input, dist_cls &the_dist);
 	int &operator[](int ndx);
+	int const &operator[](int ndx) const;
 
 private:
-	int feet_m;             // 0 to infinite
-	int inches_m;           // 0 to 12
-	void normalize();
+	mutable int feet_m;             // 0 to infinite
+	mutable int inches_m;           // 0 to 12
+	mutable bool is_dirty_m;
+	void normalize() const;
 }; // dist_cls
 
