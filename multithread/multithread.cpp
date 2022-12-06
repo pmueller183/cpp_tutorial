@@ -4,12 +4,12 @@
 #include <mutex>
 #include <thread>
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <string>
 #include <chrono>
 
 typedef std::unique_lock<std::mutex> unique_lock_mutex;
-typedef std::lock_guard<std::mutex>  lock_guard_mutex;
 
 class sync_cls
 {
@@ -48,20 +48,19 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		std::cout << "the _do_some_work_hf ";
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-		std::cout << "id " << data << " function is running on another ";
+		std::cout << "id " << std::setw(2) << data << " function is running on another ";
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		std::cout << "thread.\n";
 	};
 
 	// tell caller we finished initializing (sync var 2)
-	// wait until call sets state to 2
 	{
-		lock_guard_mutex the_lock(the_sync->mutex_m);
+		unique_lock_mutex the_lock(the_sync->mutex_m);
 		the_sync->val_m = 2;
 		the_sync->cv_m.notify_one();
 	}
 
-	// wait until call sets state to 3
+	// wait until caller sets state to 3
 	{
 		unique_lock_mutex the_lock(the_sync->mutex_m);
 		the_sync->cv_m.wait(the_lock, 
@@ -73,14 +72,14 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 		std::lock_guard<std::mutex> lock(*cout_guard);
 		std::cout << "The function call ";
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-		std::cout << "by worker thread " << scrstr << " ";
+		std::cout << "by worker thread " << std::setw(2) << scrstr << " ";
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		std::cout << "has ended.\n";
 	}
 
 	// tell caller we're done state 4
 	{
-		lock_guard_mutex the_lock(the_sync->mutex_m);
+		unique_lock_mutex the_lock(the_sync->mutex_m);
 		the_sync->val_m = 4;
 		the_sync->cv_m.notify_one();
 	}
@@ -89,12 +88,13 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 
 int main()
 {
+	int const num_threads_k = 14;
 	std::vector<int> the_states;
 	std::vector<sync_cls_ptr> the_syncs;
 	std::vector<std::thread> the_threads;
 	std::mutex cout_guard;
 
-	for(int ii = 0; ii < 10; ++ii)
+	for(int ii = 0; ii < num_threads_k; ++ii)
 	{
 		sync_cls_ptr the_sync;
 		the_sync = new sync_cls;
@@ -104,16 +104,17 @@ int main()
 		the_states.push_back(0);
 	} // for ii
 
-	for(int ii = 9; ii >= 0; --ii)
+	for(int ii = num_threads_k-1; ii >= 0; --ii)
 	{
-		lock_guard_mutex the_lock(the_syncs[ii]->mutex_m);
+		unique_lock_mutex the_lock(the_syncs[ii]->mutex_m);
 		the_states[ii] = 1;
 		the_syncs[ii]->val_m = 1;
+		the_syncs[ii]->cv_m.notify_one();
 	}
 
 	while(the_states[0] != 4)
 	{
-		for(int ii = 9; ii >= 0; --ii)
+		for(int ii = 0; ii < num_threads_k; ++ii)
 		{
 			sync_cls *the_sync = the_syncs[ii];
 			{
@@ -126,13 +127,13 @@ int main()
 			}
 			if(2 == the_states[ii])
 			{
-				if(9 == ii || the_states[ii+1] >= 3)
+				// for each thread to wait until later thread finishes
+				if(num_threads_k-1 == ii || the_states[ii+1] >= 4)
 				{
-					lock_guard_mutex the_lock(the_sync->mutex_m);
+					unique_lock_mutex the_lock(the_sync->mutex_m);
 					the_states[ii] = 3;
 					the_sync->val_m = 3;
 					the_sync->cv_m.notify_one();
-					std::this_thread::sleep_for(std::chrono::milliseconds(10));
 				}
 			}
 		}
