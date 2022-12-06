@@ -18,11 +18,11 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard)
 
 	{
 		std::lock_guard<std::mutex> lock(*cout_guard);
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		std::cout << "the _do_some_work_hf ";
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		std::cout << "function is running on another ";
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		std::cout << "thread.\n";
 	};
 
@@ -30,23 +30,22 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard)
 	{
 		std::lock_guard<std::mutex> lock(*cout_guard);
 		std::cout << "The function call ";
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		std::cout << "by worker thread " << scrstr << " ";
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		std::this_thread::sleep_for(std::chrono::milliseconds(20));
 		std::cout << "has ended.\n";
 	}
 } // _do_some_work_hf
 
 int main()
 {
-	std::cout << "Hello World!\n";
 	std::vector<std::thread> the_threads;
 	std::mutex cout_guard;
 
 	for(int ii = 0; ii < 10; ++ii)
 	{
-		the_threads.push_back(std::thread(
-				_do_some_work_hf, ii, &cout_guard));
+		the_threads.push_back(
+				std::thread(_do_some_work_hf, ii, &cout_guard));
 	} // for ii
 
 	for(auto &ii:the_threads)
