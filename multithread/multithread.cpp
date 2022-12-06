@@ -8,9 +8,28 @@
 #include <string>
 #include <chrono>
 
-
-static void _do_some_work_hf(int thread_id, std::mutex *cout_guard)
+class sync_cls
 {
+public:
+	std::mutex mutex_m;
+	std::condition_variable cv_m;
+	int val_m;
+
+	sync_cls()
+	{
+		std::mutex mutex_m;
+		std::condition_variable cv_m;
+		val_m = 0;
+	}
+
+}; // sync_cls
+
+static void _do_some_work_hf(int thread_id, std::mutex *cout_guard, 
+		sync_cls *sync)
+{
+	std::unique_lock<std::mutex> the_lock(sync->mutex_m);
+	sync->cv_m.wait(the_lock, [sync]{return 1 == sync->val_m;});
+
 	int data;
 	std::string scrstr;
 
@@ -39,13 +58,19 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard)
 
 int main()
 {
+	std::vector<sync_cls> the_syncs;
 	std::vector<std::thread> the_threads;
 	std::mutex cout_guard;
 
 	for(int ii = 0; ii < 10; ++ii)
 	{
+		sync_cls sync;
 		the_threads.push_back(
-				std::thread(_do_some_work_hf, ii, &cout_guard));
+				std::thread(_do_some_work_hf, ii, &cout_guard, &sync));
+		{
+			std::lock_guard<std::mutex> the_lock(sync.mutex_m);
+			sync.val_m = 1;
+		}
 	} // for ii
 
 	for(auto &ii:the_threads)
