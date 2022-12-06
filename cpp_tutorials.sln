@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "exception_work", "exception
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "classes", "classes\classes.vcxproj", "{98EBA17C-5B3D-4D82-9D9B-F56C3DAA0A23}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multithread", "multithread\multithread.vcxproj", "{E56FCAAB-7E17-4606-95D1-8A97A7575BCF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -33,6 +35,10 @@ Global
 		{98EBA17C-5B3D-4D82-9D9B-F56C3DAA0A23}.Debug|x64.Build.0 = Debug|x64
 		{98EBA17C-5B3D-4D82-9D9B-F56C3DAA0A23}.Release|x64.ActiveCfg = Release|x64
 		{98EBA17C-5B3D-4D82-9D9B-F56C3DAA0A23}.Release|x64.Build.0 = Release|x64
+		{E56FCAAB-7E17-4606-95D1-8A97A7575BCF}.Debug|x64.ActiveCfg = Debug|x64
+		{E56FCAAB-7E17-4606-95D1-8A97A7575BCF}.Debug|x64.Build.0 = Debug|x64
+		{E56FCAAB-7E17-4606-95D1-8A97A7575BCF}.Release|x64.ActiveCfg = Release|x64
+		{E56FCAAB-7E17-4606-95D1-8A97A7575BCF}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
