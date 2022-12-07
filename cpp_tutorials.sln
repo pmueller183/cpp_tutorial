@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "classes", "classes\classes.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multithread", "multithread\multithread.vcxproj", "{E56FCAAB-7E17-4606-95D1-8A97A7575BCF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multi_cpp_20", "multi_cpp_20\multi_cpp_20.vcxproj", "{C27CBC4E-4594-44F2-876C-4D0D2D5996C0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -39,6 +41,10 @@ Global
 		{E56FCAAB-7E17-4606-95D1-8A97A7575BCF}.Debug|x64.Build.0 = Debug|x64
 		{E56FCAAB-7E17-4606-95D1-8A97A7575BCF}.Release|x64.ActiveCfg = Release|x64
 		{E56FCAAB-7E17-4606-95D1-8A97A7575BCF}.Release|x64.Build.0 = Release|x64
+		{C27CBC4E-4594-44F2-876C-4D0D2D5996C0}.Debug|x64.ActiveCfg = Debug|x64
+		{C27CBC4E-4594-44F2-876C-4D0D2D5996C0}.Debug|x64.Build.0 = Debug|x64
+		{C27CBC4E-4594-44F2-876C-4D0D2D5996C0}.Release|x64.ActiveCfg = Release|x64
+		{C27CBC4E-4594-44F2-876C-4D0D2D5996C0}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
