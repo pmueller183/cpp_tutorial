@@ -111,6 +111,16 @@ static void _zap_syncs_hf(sync_cls_vec *the_syncs)
 	} // for ii
 } // _zap_syncs_hf
 
+static void _make_rnd_eng_hf(std::mt19937 *rnd_eng)
+{
+	std::random_device rnd_dev;
+	std::seed_seq rnd_seed{rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev(),
+			rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev()};
+
+	*rnd_eng = std::mt19937(rnd_seed);
+}
+
+
 int main()
 {
 	sync_cls_vec the_syncs;
@@ -122,11 +132,9 @@ int main()
 		int const num_threads_k = 6;
 		std::vector<int> the_states;
 		std::mutex cout_guard;
+		std::mt19937 rnd_eng;
 
-		std::random_device rnd_dev;
-		std::seed_seq rnd_seed{rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev(),
-				rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev()};
-		std::mt19937 rnd_eng(rnd_seed);
+		_make_rnd_eng_hf(&rnd_eng);
 
 		for(int ii = 0; ii < num_threads_k; ++ii)
 		{
