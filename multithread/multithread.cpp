@@ -8,6 +8,10 @@
 #include <vector>
 #include <string>
 #include <chrono>
+#include <random>
+
+using std::cout;
+using std::endl;
 
 typedef std::unique_lock<std::mutex> unique_lock_mutex;
 
@@ -27,7 +31,7 @@ public:
 
 	~sync_cls()
 	{
-		std::cout << "ending sync\n";
+		cout << "ending sync\n";
 	}
 
 }; // sync_cls
@@ -52,11 +56,11 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 	{
 		std::lock_guard<std::mutex> lock(*cout_guard);
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-		std::cout << "the _do_some_work_hf ";
+		cout << "the _do_some_work_hf ";
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-		std::cout << "id " << std::setw(2) << data << " function is running on another ";
+		cout << "id " << std::setw(2) << data << " function is running on another ";
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-		std::cout << "thread.\n";
+		cout << "thread\n";
 	};
 
 	// tell caller we finished initializing (sync var 2)
@@ -78,11 +82,11 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 	scrstr = std::to_string(data);
 	{
 		std::lock_guard<std::mutex> lock(*cout_guard);
-		std::cout << "The function call ";
+		cout << "The function call ";
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-		std::cout << "by worker thread " << std::setw(2) << scrstr << " ";
+		cout << "by worker thread " << std::setw(2) << scrstr << " ";
 		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-		std::cout << "has ended.\n";
+		cout << "has ended.\n";
 	}
 
 	// tell caller we're done state 4
@@ -110,13 +114,19 @@ static void _zap_syncs_hf(sync_cls_vec *the_syncs)
 int main()
 {
 	sync_cls_vec the_syncs;
+	std::vector<std::thread> the_threads;
+
 	try
 	{
 
 		int const num_threads_k = 6;
 		std::vector<int> the_states;
-		std::vector<std::thread> the_threads;
 		std::mutex cout_guard;
+
+		std::random_device rnd_dev;
+		std::seed_seq rnd_seed{rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev(),
+				rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev()};
+		std::mt19937 rnd_eng(rnd_seed);
 
 		for(int ii = 0; ii < num_threads_k; ++ii)
 		{
@@ -167,20 +177,26 @@ int main()
 			}
 		} // the_states[0] != 4
 
-		for(auto &ii:the_threads)
-			ii.join();
+		if(0 == rnd_eng() % 4)
+			throw 3;
 
-		std::cout << "end of try\n";
+		cout << "end of try\n";
 	} // try
 	catch(...)
 	{
+		std::cerr << "CATCH err\n";
+		// Need to tell all the threads to terminate, which I don't feel
+		// like doing right now.
+		for(auto &ii:the_threads)
+			ii.join();
 		_zap_syncs_hf(&the_syncs);
-		std::cout << "catch\n";
+		throw;
 	}
 
-
+	for(auto &ii:the_threads)
+		ii.join();
 	_zap_syncs_hf(&the_syncs);
-	std::cout << "end of main\n";
+	cout << "end of main\n";
 
 } // main
 
