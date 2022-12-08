@@ -10,23 +10,19 @@
 
 using std::cout;
 using std::endl;
-
-typedef std::unique_lock<std::mutex> unique_lock_mutex;
+using std::atomic_wait;
 
 typedef enum{wait_for_start_kf, do_start_kf, ready_for_work_kf, do_work_kf, done_kf}
-		sub_thread_enm;
+		thread_state_enm;
+typedef std::atomic<thread_state_enm> atomic_thread_state_enm;
 
 class sync_cls
 {
 public:
-	std::mutex mutex_m;
-	std::condition_variable cv_m;
-	sub_thread_enm state_m;
+	atomic_thread_state_enm state_m;
 
 	sync_cls()
 	{
-		std::mutex mutex_m;
-		std::condition_variable cv_m;
 		state_m = wait_for_start_kf;
 	}
 
@@ -43,11 +39,7 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 		sync_cls *the_sync)
 {
 	// don't start until caller sets sync variable to 1
-	{
-		unique_lock_mutex the_lock(the_sync->mutex_m);
-		the_sync->cv_m.wait(
-				the_lock, [the_sync]{return the_sync->state_m >= do_start_kf;});
-	}
+	atomic_wait(&the_sync->state_m, wait_for_start_kf);
 
 	int data;
 	std::string scrstr;
@@ -65,20 +57,11 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 	};
 
 	// tell caller we finished initializing (sync var 2)
-	{
-		{
-			unique_lock_mutex the_lock(the_sync->mutex_m);
-			the_sync->state_m = ready_for_work_kf;
-		}
-		the_sync->cv_m.notify_one();
-	}
+	the_sync->state_m = ready_for_work_kf;
+	the_sync->state_m.notify_one();
 
 	// wait until caller sets state to 3
-	{
-		unique_lock_mutex the_lock(the_sync->mutex_m);
-		the_sync->cv_m.wait(the_lock, 
-				[the_sync]{return the_sync->state_m >= do_work_kf;});
-	}
+	atomic_wait(&the_sync->state_m, ready_for_work_kf);
 
 	scrstr = std::to_string(data);
 	{
@@ -91,13 +74,8 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 	}
 
 	// tell caller we're done state 4
-	{
-		{
-			unique_lock_mutex the_lock(the_sync->mutex_m);
-			the_sync->state_m = done_kf;
-		}
-		the_sync->cv_m.notify_one();
-	}
+	the_sync->state_m = done_kf;
+	the_sync->state_m.notify_one();
 
 } // _do_some_work_hf
 
@@ -131,7 +109,7 @@ int main()
 	{
 
 		int const num_threads_k = 8;
-		std::vector<sub_thread_enm> the_states;
+		std::vector<thread_state_enm> the_states;
 		std::mutex cout_guard;
 		std::mt19937 rnd_eng;
 
@@ -150,11 +128,10 @@ int main()
 		for(int ii = num_threads_k-1; ii >= 0; --ii)
 		{
 			{
-				unique_lock_mutex the_lock(the_syncs[ii]->mutex_m);
 				the_states[ii] = do_start_kf;
 				the_syncs[ii]->state_m = do_start_kf;
+				the_syncs[ii]->state_m.notify_one();
 			}
-			the_syncs[ii]->cv_m.notify_one();
 		}
 
 		while(the_states[0] != done_kf)
@@ -163,10 +140,6 @@ int main()
 			{
 				sync_cls *the_sync = the_syncs[ii];
 				{
-					unique_lock_mutex the_lock(the_sync->mutex_m);
-					the_sync->cv_m.wait_for(the_lock,
-							std::chrono::seconds(0),
-							[the_sync]{return the_sync->state_m >= ready_for_work_kf;});
 					the_states[ii] = the_sync->state_m;
 					int const qq = 77;
 				}
@@ -175,18 +148,15 @@ int main()
 					// for each thread to wait until later thread finishes
 					if(num_threads_k-1 == ii || the_states[ii+1] >= done_kf)
 					{
-						{
-							unique_lock_mutex the_lock(the_sync->mutex_m);
-							the_sync->state_m = do_work_kf;
-						}
 						the_states[ii] = do_work_kf;
-						the_sync->cv_m.notify_one();
+						the_sync->state_m = do_work_kf;
+						the_sync->state_m.notify_one();
 					}
 				}
 			}
 		} // the_states[0] != done_kf
 
-		if(0 == rnd_eng() % 4)
+		if(false && 0 == rnd_eng() % 4)
 			throw 3;
 
 		cout << "end of try\n";
