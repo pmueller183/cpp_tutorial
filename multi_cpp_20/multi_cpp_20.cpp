@@ -15,13 +15,13 @@ using std::atomic_wait;
 typedef enum{wait_for_start_kf, do_start_kf, ready_for_work_kf, do_work_kf, done_kf}
 		thread_state_enm;
 typedef std::atomic<thread_state_enm> atomic_thread_state_enm;
-typedef atomic_thread_state_enm *sync_ptr;
-typedef std::vector<sync_ptr> sync_vec;
+typedef atomic_thread_state_enm *state_ptr;
+typedef std::vector<state_ptr> state_vec;
 
 static void _do_some_work_hf(int thread_id, std::mutex *cout_guard, 
 		atomic_thread_state_enm *the_state)
 {
-	// don't start until caller sets sync variable to 1
+	// don't start until caller sets state variable to 1
 	atomic_wait(the_state, wait_for_start_kf);
 
 	int data;
@@ -39,7 +39,7 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 		cout << "thread\n";
 	};
 
-	// tell caller we finished initializing (sync var 2)
+	// tell caller we finished initializing (state var 2)
 	*the_state = ready_for_work_kf;
 	the_state->notify_one();
 
@@ -62,17 +62,17 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 
 } // _do_some_work_hf
 
-static void _zap_syncs_hf(sync_vec *the_states)
+static void _zap_states_hf(state_vec *the_states)
 {
-	for(sync_vec::reverse_iterator ii = the_states->rbegin();
+	for(state_vec::reverse_iterator ii = the_states->rbegin();
 	    ii != the_states->rend();
 		 ++ii)
 	{
-		std::cerr << "delete sync obj " << *ii << endl;
+		std::cerr << "delete state obj " << *ii << endl;
 		delete *ii;
 		*ii = 0;
 	} // for ii
-} // _zap_syncs_hf
+} // _zap_states_hf
 
 static void _make_rnd_eng_hf(std::mt19937 *rnd_eng)
 {
@@ -86,7 +86,7 @@ static void _make_rnd_eng_hf(std::mt19937 *rnd_eng)
 
 int main()
 {
-	sync_vec the_states;
+	state_vec the_states;
 	std::vector<std::thread> the_threads;
 
 	try
@@ -100,7 +100,7 @@ int main()
 
 		for(int ii = 0; ii < num_threads_k; ++ii)
 		{
-			sync_ptr the_state;
+			state_ptr the_state;
 			the_state = new atomic_thread_state_enm;
 			*the_state = wait_for_start_kf;
 			the_states.push_back(the_state);
@@ -119,7 +119,7 @@ int main()
 		//this loop ensures that the threads will finish in inverse order
 		while(*(the_states[0]) != done_kf)
 		{
-			for(int ii = 0; ii < num_threads_k; ++ii)
+			for(int ii = num_threads_k - 1; ii >= 0; --ii)
 			{
 				atomic_thread_state_enm *the_state = the_states[ii];
 				if(ready_for_work_kf == *the_state)
@@ -146,14 +146,13 @@ int main()
 		// like doing right now.
 		for(auto &ii:the_threads)
 			ii.join();
-		_zap_syncs_hf(&the_states);
+		_zap_states_hf(&the_states);
 		throw;
 	}
 
 	for(auto &ii:the_threads)
 		ii.join();
-	_zap_syncs_hf(&the_states);
+	_zap_states_hf(&the_states);
 	cout << "end of main\n";
 
 } // main
-
