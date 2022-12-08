@@ -44,20 +44,23 @@ static void _readwrite_hf()
 static void _caller_const_hf(dist_cls *foo, dist_cls const &ans)
 {
 	cout << "foo " << *foo << endl;
-	cout << "foo " << foo->feet() << " feet, " << foo->inches() << " inches" << endl;
+	cout << "foo " << foo->get_feet() << " feet, " << 
+			foo->get_inches() << " inches" << endl;
 	(*foo)[1] = (*foo)[1] + 23;
 	cout << "foo " << *foo << endl;
 	(*foo)[1] = ans[1] + 23;
 	cout << "foo " << *foo << endl;
-	foo->feet() = 21;
-	cout << "foo " << foo->feet() << " feet, " << foo->inches() << " inches" << endl;
-	foo->inches() = -78;
+	foo->put_feet(21);
+	cout << "foo " << foo->get_feet() << " feet, " << 
+			foo->get_inches() << " inches" << endl;
+	foo->put_inches(-78);
 	cout << "foo " << *foo << endl;
 	cout << endl;
-	foo->feet() -= 10;
+	foo->put_feet(foo->get_feet()-10);
 
 	cout << "ans " << ans << endl;
-	cout << "ans " << ans.feet() << " feet, " << ans.inches() << " inches" << endl;
+	cout << "ans " << ans.get_feet() << " feet, " << 
+			ans.get_inches() << " inches" << endl;
 //	ans[1] = ans[1] + 23;
 //	cout << endl << "ans " << ans << endl;
 

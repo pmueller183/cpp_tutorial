@@ -13,29 +13,27 @@ dist_cls::dist_cls(int feet, int inches)
 	is_dirty_m = true;
 } // dist_cls
 
-int &dist_cls::feet() 
+int dist_cls::get_feet() const
 {
 	normalize();
+	return feet_m;
+} // get_feet
+void dist_cls::put_feet(int feet)
+{
+	feet_m = feet;
 	is_dirty_m = true;
-	return feet_m;
-} // feet()
-int const &dist_cls::feet() const 
-{
-	normalize();
-	return feet_m;
-} // feet() const
+} // put_feet
 
-int &dist_cls::inches()
+int dist_cls::get_inches() const
 {
 	normalize();
+	return inches_m;
+} // get_inches
+void dist_cls::put_inches(int inches)
+{
+	inches_m = inches;
 	is_dirty_m = true;
-	return inches_m;
-} // inches()
-int const &dist_cls::inches() const
-{
-	normalize();
-	return inches_m;
-} // inches() const
+} // put_inches
 
 string dist_cls::to_string() const
 {

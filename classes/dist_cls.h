@@ -10,10 +10,10 @@ public:
 	int &operator[](int ndx);
 	int const &operator[](int ndx) const;
 
-	int &feet();
-	int const &feet() const;
-	int &inches();
-	int const &inches() const;
+	int get_feet() const;
+	void put_feet(int feet);
+	int get_inches() const;
+	void put_inches(int inches);
 
 	string to_string() const;
 
