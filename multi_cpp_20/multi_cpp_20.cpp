@@ -13,18 +13,21 @@ using std::endl;
 
 typedef std::unique_lock<std::mutex> unique_lock_mutex;
 
+typedef enum{wait_for_start_kf, do_start_kf, ready_for_work_kf, do_work_kf, done_kf}
+		sub_thread_enm;
+
 class sync_cls
 {
 public:
 	std::mutex mutex_m;
 	std::condition_variable cv_m;
-	int val_m;
+	sub_thread_enm state_m;
 
 	sync_cls()
 	{
 		std::mutex mutex_m;
 		std::condition_variable cv_m;
-		val_m = 0;
+		state_m = wait_for_start_kf;
 	}
 
 	~sync_cls()
@@ -43,7 +46,7 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 	{
 		unique_lock_mutex the_lock(the_sync->mutex_m);
 		the_sync->cv_m.wait(
-				the_lock, [the_sync]{return the_sync->val_m >= 1;});
+				the_lock, [the_sync]{return the_sync->state_m >= do_start_kf;});
 	}
 
 	int data;
@@ -53,11 +56,11 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 
 	{
 		std::lock_guard<std::mutex> lock(*cout_guard);
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		cout << "the _do_some_work_hf ";
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		cout << "id " << std::setw(2) << data << " function is running on another ";
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 		cout << "thread\n";
 	};
 
@@ -65,7 +68,7 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 	{
 		{
 			unique_lock_mutex the_lock(the_sync->mutex_m);
-			the_sync->val_m = 2;
+			the_sync->state_m = ready_for_work_kf;
 		}
 		the_sync->cv_m.notify_one();
 	}
@@ -74,7 +77,7 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 	{
 		unique_lock_mutex the_lock(the_sync->mutex_m);
 		the_sync->cv_m.wait(the_lock, 
-				[the_sync]{return the_sync->val_m >= 3;});
+				[the_sync]{return the_sync->state_m >= do_work_kf;});
 	}
 
 	scrstr = std::to_string(data);
@@ -91,7 +94,7 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 	{
 		{
 			unique_lock_mutex the_lock(the_sync->mutex_m);
-			the_sync->val_m = 4;
+			the_sync->state_m = done_kf;
 		}
 		the_sync->cv_m.notify_one();
 	}
@@ -127,8 +130,8 @@ int main()
 	try
 	{
 
-		int const num_threads_k = 6;
-		std::vector<int> the_states;
+		int const num_threads_k = 8;
+		std::vector<sub_thread_enm> the_states;
 		std::mutex cout_guard;
 		std::mt19937 rnd_eng;
 
@@ -141,20 +144,20 @@ int main()
 			the_syncs.push_back(the_sync);
 			the_threads.push_back(
 					std::thread(_do_some_work_hf, ii, &cout_guard, the_sync));
-			the_states.push_back(0);
+			the_states.push_back(wait_for_start_kf);
 		} // for ii
 
 		for(int ii = num_threads_k-1; ii >= 0; --ii)
 		{
 			{
 				unique_lock_mutex the_lock(the_syncs[ii]->mutex_m);
-				the_states[ii] = 1;
-				the_syncs[ii]->val_m = 1;
+				the_states[ii] = do_start_kf;
+				the_syncs[ii]->state_m = do_start_kf;
 			}
 			the_syncs[ii]->cv_m.notify_one();
 		}
 
-		while(the_states[0] != 4)
+		while(the_states[0] != done_kf)
 		{
 			for(int ii = 0; ii < num_threads_k; ++ii)
 			{
@@ -163,25 +166,25 @@ int main()
 					unique_lock_mutex the_lock(the_sync->mutex_m);
 					the_sync->cv_m.wait_for(the_lock,
 							std::chrono::seconds(0),
-							[the_sync]{return the_sync->val_m >= 2;});
-					the_states[ii] = the_sync->val_m;
+							[the_sync]{return the_sync->state_m >= ready_for_work_kf;});
+					the_states[ii] = the_sync->state_m;
 					int const qq = 77;
 				}
-				if(2 == the_states[ii])
+				if(ready_for_work_kf == the_states[ii])
 				{
 					// for each thread to wait until later thread finishes
-					if(num_threads_k-1 == ii || the_states[ii+1] >= 4)
+					if(num_threads_k-1 == ii || the_states[ii+1] >= done_kf)
 					{
 						{
 							unique_lock_mutex the_lock(the_sync->mutex_m);
-							the_sync->val_m = 3;
+							the_sync->state_m = do_work_kf;
 						}
-						the_states[ii] = 3;
+						the_states[ii] = do_work_kf;
 						the_sync->cv_m.notify_one();
 					}
 				}
 			}
-		} // the_states[0] != 4
+		} // the_states[0] != done_kf
 
 		if(0 == rnd_eng() % 4)
 			throw 3;
