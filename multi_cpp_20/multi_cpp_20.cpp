@@ -89,14 +89,16 @@ int main()
 	state_vec the_states;
 	std::vector<std::thread> the_threads;
 
+	std::mutex cout_guard; // make sure cout calls are not interleaved
+	std::mt19937 rnd_eng;
+	std::vector<int> startup_order; // order the threads will start; this will
+	                                // be randomized
+
+	_make_rnd_eng_hf(&rnd_eng);
+
 	try
 	{
-
 		int const num_threads_k = 8;
-		std::mutex cout_guard;
-		std::mt19937 rnd_eng;
-
-		_make_rnd_eng_hf(&rnd_eng);
 
 		for(int ii = 0; ii < num_threads_k; ++ii)
 		{
@@ -106,14 +108,16 @@ int main()
 			the_states.push_back(the_state);
 			the_threads.push_back(
 					std::thread(_do_some_work_hf, ii, &cout_guard, the_state));
+			startup_order.push_back(ii);
 		} // for ii
 
-		for(int ii = num_threads_k-1; ii >= 0; --ii)
+		// startup threads in random order
+		std::shuffle(startup_order.begin(), startup_order.end(), rnd_eng);
+		for(auto &ii : startup_order)
 		{
-			{
-				*the_states[ii] = do_start_kf;
-				the_states[ii]->notify_one();
-			}
+			*(the_states[ii]) = do_start_kf;
+			the_states[ii]->notify_one();
+			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
 		//this loop ensures that the threads will finish in inverse order
@@ -125,6 +129,7 @@ int main()
 				if(ready_for_work_kf == *the_state)
 				{
 					// for each thread to wait until later thread finishes
+					// note that the last thread (num_threads_k-1) does not have to wait
 					if(num_threads_k-1 == ii || *(the_states[ii+1]) >= done_kf)
 					{
 						*the_state = do_work_kf;
