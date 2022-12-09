@@ -48,9 +48,21 @@ public:
 typedef sync_cls *sync_cls_ptr;
 typedef std::vector<sync_cls_ptr> sync_cls_vec;
 
+template<class rnd_generator>
+static int _uniform_int_hf(rnd_generator &generator, int min, int max)
+{
+	std::uniform_int_distribution<int> distribution(min,max);
+	return distribution(generator);
+} // _uniform_int_hf
+
+
 static void _do_some_work_hf(int thread_id, std::mutex *cout_guard, 
 		sync_cls *the_sync)
 {
+	int sleep_mlls;
+	std::mt19937 rnd_eng;
+	_make_rnd_eng_hf(&rnd_eng);
+
 	// don't start until caller sets sync variable to 1
 	{
 		unique_lock_mutex the_lock(the_sync->mutex_m);
@@ -62,6 +74,10 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 	std::string scrstr;
 
 	data = thread_id;
+
+	// sleep for a random amount of time (simulate long initialization)
+	sleep_mlls = _uniform_int_hf(rnd_eng, 100, 300);
+	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls));
 
 	{
 		std::lock_guard<std::mutex> lock(*cout_guard);
@@ -75,12 +91,10 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 
 	// tell caller we finished initializing (sync var 2)
 	{
-		{
-			unique_lock_mutex the_lock(the_sync->mutex_m);
-			the_sync->state_m = ready_for_work_kf;
-		}
-		the_sync->cv_m.notify_one();
+		unique_lock_mutex the_lock(the_sync->mutex_m);
+		the_sync->state_m = ready_for_work_kf;
 	}
+	the_sync->cv_m.notify_one();
 
 	// wait until caller sets state to 3
 	{
@@ -88,6 +102,10 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 		the_sync->cv_m.wait(the_lock, 
 				[the_sync]{return the_sync->state_m >= do_work_kf;});
 	}
+	 
+	// sleep for a random amount of time (simulate long processing)
+	sleep_mlls = _uniform_int_hf(rnd_eng, 100, 300);
+	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls));
 
 	scrstr = std::to_string(data);
 	{
@@ -101,12 +119,10 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 
 	// tell caller we're done state 4
 	{
-		{
-			unique_lock_mutex the_lock(the_sync->mutex_m);
-			the_sync->state_m = done_kf;
-		}
-		the_sync->cv_m.notify_one();
+		unique_lock_mutex the_lock(the_sync->mutex_m);
+		the_sync->state_m = done_kf;
 	}
+	the_sync->cv_m.notify_one();
 
 } // _do_some_work_hf
 
@@ -190,7 +206,7 @@ int main()
 			}
 		} // the_states[0] != done_kf
 
-		if(0 == rnd_eng() % 4)
+		if(0 == _uniform_int_hf(rnd_eng, 0, 3))
 			throw 3;
 
 		cout << "end of try\n";
