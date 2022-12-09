@@ -11,6 +11,15 @@
 using std::cout;
 using std::endl;
 
+static void _make_rnd_eng_hf(std::mt19937 *rnd_eng)
+{
+	std::random_device rnd_dev;
+	std::seed_seq rnd_seed{rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev(),
+			rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev()};
+
+	*rnd_eng = std::mt19937(rnd_seed);
+} // _make_rnd_eng_hf
+
 typedef std::unique_lock<std::mutex> unique_lock_mutex;
 
 typedef enum{wait_for_start_kf, do_start_kf, ready_for_work_kf, do_work_kf, done_kf}
@@ -101,34 +110,27 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 
 } // _do_some_work_hf
 
-static void _zap_syncs_hf(sync_cls_vec *the_syncs)
-{
-	for(sync_cls_vec::reverse_iterator ii = the_syncs->rbegin();
-	    ii != the_syncs->rend();
-		 ++ii)
-	{
-		delete *ii;
-		*ii = 0;
-	} // for ii
-} // _zap_syncs_hf
-
-static void _make_rnd_eng_hf(std::mt19937 *rnd_eng)
-{
-	std::random_device rnd_dev;
-	std::seed_seq rnd_seed{rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev(),
-			rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev()};
-
-	*rnd_eng = std::mt19937(rnd_seed);
-}
-
-
 int main()
 {
-	sync_cls_vec the_syncs;
 	std::vector<std::thread> the_threads;
-
 	try
 	{
+
+		struct ensure_release_sct
+		{
+			sync_cls_vec the_syncs;
+			~ensure_release_sct()
+			{
+				for(sync_cls_vec::reverse_iterator ii = the_syncs.rbegin();
+					 ii != the_syncs.rend();
+					 ++ii)
+				{
+					delete *ii;
+					*ii = 0;
+				} // for ii
+			}
+		} ers; // ensure_release_struct
+
 
 		int const num_threads_k = 6;
 		std::vector<sub_thread_enm> the_states;
@@ -141,7 +143,7 @@ int main()
 		{
 			sync_cls_ptr the_sync;
 			the_sync = new sync_cls;
-			the_syncs.push_back(the_sync);
+			ers.the_syncs.push_back(the_sync);
 			the_threads.push_back(
 					std::thread(_do_some_work_hf, ii, &cout_guard, the_sync));
 			the_states.push_back(wait_for_start_kf);
@@ -150,18 +152,18 @@ int main()
 		for(int ii = num_threads_k-1; ii >= 0; --ii)
 		{
 			{
-				unique_lock_mutex the_lock(the_syncs[ii]->mutex_m);
+				unique_lock_mutex the_lock(ers.the_syncs[ii]->mutex_m);
 				the_states[ii] = do_start_kf;
-				the_syncs[ii]->state_m = do_start_kf;
+				ers.the_syncs[ii]->state_m = do_start_kf;
 			}
-			the_syncs[ii]->cv_m.notify_one();
+			ers.the_syncs[ii]->cv_m.notify_one();
 		}
 
 		while(the_states[0] != done_kf)
 		{
 			for(int ii = 0; ii < num_threads_k; ++ii)
 			{
-				sync_cls *the_sync = the_syncs[ii];
+				sync_cls *the_sync = ers.the_syncs[ii];
 				{
 					unique_lock_mutex the_lock(the_sync->mutex_m);
 					the_sync->cv_m.wait_for(the_lock,
@@ -198,13 +200,11 @@ int main()
 		// like doing right now.
 		for(auto &ii:the_threads)
 			ii.join();
-		_zap_syncs_hf(&the_syncs);
 		throw;
 	}
 
 	for(auto &ii:the_threads)
 		ii.join();
-	_zap_syncs_hf(&the_syncs);
 	cout << "end of main\n";
 
 } // main

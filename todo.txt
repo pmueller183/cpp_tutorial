@@ -1,5 +1,3 @@
-classes:
-	add std::to_string function to dist_cls
 multithread / multi_cpp_20:
 	ers (ensure_release_struct)
 	rnd_eng thread safe?
