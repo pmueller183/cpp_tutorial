@@ -90,23 +90,8 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 
 } // _do_some_work_hf
 
-static void _zap_states_hf(state_vec *the_states)
-{
-	for(state_vec::reverse_iterator ii = the_states->rbegin();
-	    ii != the_states->rend();
-		 ++ii)
-	{
-		std::cerr << "delete state obj " << *ii << endl;
-		delete *ii;
-		*ii = 0;
-	} // for ii
-} // _zap_states_hf
-
-
 int main()
 {
-	state_vec the_states;
-	std::vector<std::thread> the_threads;
 
 	std::mutex cout_guard; // make sure cout calls are not interleaved
 	std::mt19937 rnd_eng;
@@ -115,6 +100,27 @@ int main()
 
 	try
 	{
+		struct ensure_release_sct
+		{
+			std::vector<std::thread> the_threads;
+			state_vec the_states;
+			~ensure_release_sct()
+			{
+				std::cerr << "joining threads...";
+				for(auto &ii:the_threads)
+					ii.join();
+				std::cerr << "done\n";
+				for(state_vec::reverse_iterator ii = the_states.rbegin();
+					 ii != the_states.rend();
+					 ++ii)
+				{
+					std::cerr << "delete state obj " << *ii << endl;
+					delete *ii;
+					*ii = 0;
+				} // for ii
+			} // dtor
+		} ers; // ensure_release_struct
+
 		int const num_threads_k = 8;
 
 		for(int ii = 0; ii < num_threads_k; ++ii)
@@ -122,29 +128,29 @@ int main()
 			state_ptr the_state;
 			the_state = new atomic_thread_state_enm;
 			*the_state = wait_for_start_kf;
-			the_states.push_back(the_state);
-			the_threads.push_back(
+			ers.the_states.push_back(the_state);
+			ers.the_threads.push_back(
 					std::thread(_do_some_work_hf, ii, &cout_guard, the_state));
 		} // for ii
 
 		for(int ii = 0; ii < num_threads_k; ++ii)
 		{
-			*(the_states[ii]) = do_start_kf;
-			the_states[ii]->notify_one();
+			*(ers.the_states[ii]) = do_start_kf;
+			ers.the_states[ii]->notify_one();
 			std::this_thread::sleep_for(std::chrono::milliseconds(1));
 		}
 
 		//this loop ensures that the threads will finish in inverse order
-		while(*(the_states[0]) != done_kf)
+		while(*(ers.the_states[0]) != done_kf)
 		{
 			for(int ii = num_threads_k - 1; ii >= 0; --ii)
 			{
-				atomic_thread_state_enm *the_state = the_states[ii];
+				atomic_thread_state_enm *the_state = ers.the_states[ii];
 				if(ready_for_work_kf == *the_state)
 				{
 					// for each thread to wait until later thread finishes
 					// note that the last thread (num_threads_k-1) does not have to wait
-					if(num_threads_k-1 == ii || *(the_states[ii+1]) >= done_kf)
+					if(num_threads_k-1 == ii || *(ers.the_states[ii+1]) >= done_kf)
 					{
 						*the_state = do_work_kf;
 						the_state->notify_one();
@@ -163,15 +169,9 @@ int main()
 		std::cerr << "CATCH err\n";
 		// Need to tell all the threads to terminate, which I don't feel
 		// like doing right now.
-		for(auto &ii:the_threads)
-			ii.join();
-		_zap_states_hf(&the_states);
 		throw;
 	}
 
-	for(auto &ii:the_threads)
-		ii.join();
-	_zap_states_hf(&the_states);
 	cout << "end of main\n";
 
 } // main
