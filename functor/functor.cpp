@@ -22,10 +22,17 @@ public:
 	inline double operator()(double exx) {return m * exx + b;}
 }; // line_ftr
 
+template <typename T>
 struct print_ftr
 {
-	std::ostream &operator()(int val) { return cout << val << " "; }
+	std::ostream &operator()(T const &val) { return cout << val << " "; }
 }; // print_ftr
+
+template <int val>
+void incr_val(int &elem)
+{
+	elem += val;
+} // set_val
 
 int main()
 {
@@ -46,13 +53,31 @@ int main()
 	double const why1st = line1st(5.0);
 
 	cout << "whys are " << why0th << ", " << why1st << endl;
-
-	std::vector<int> int_vec;
-	print_ftr print_it;
-	for(int ii = 0; ii < 10; ++ii)
-		int_vec.push_back(ii);
-	std::for_each(int_vec.begin(), int_vec.end(), print_it);
 	cout << endl;
+
+	{
+		std::vector<int> int_vec;
+		print_ftr<int> print_int;
+		for(int ii = 0; ii < 10; ++ii)
+			int_vec.push_back(ii);
+		std::for_each(int_vec.begin(), int_vec.end(), print_int);
+		cout << endl;
+		cout << endl;
+	}
+
+	{
+		int const size_k = 5;
+		print_ftr<int> print_int;
+		std::vector<int> int_vec;
+		for(int ii = 0; ii < size_k; ++ii)
+			int_vec.push_back(ii);
+		std::for_each(int_vec.begin(), int_vec.end(), print_int);
+		cout << endl;
+		std::for_each(int_vec.begin(), int_vec.end(), incr_val<2>);
+		std::for_each(int_vec.begin(), int_vec.end(), print_int);
+		cout << endl;
+		cout << endl;
+	}
 
 } // main
 
