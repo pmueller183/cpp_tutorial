@@ -6,6 +6,8 @@ using namespace std;
 #include <fstream>
 #include <stdexcept>
 
+#include "qjc_supp.h"
+
 #include "box_cls.h"
 #include "dist_cls.h"
 

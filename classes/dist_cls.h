@@ -15,7 +15,9 @@ public:
 	int get_inches() const;
 	void put_inches(int inches);
 
-	string to_string() const;
+	//string to_string() const;
+
+	operator std::string() const;
 
 	friend ostream &operator<<(ostream &output, dist_cls const &the_dist);
 	friend istream &operator>>(istream &input, dist_cls &the_dist);

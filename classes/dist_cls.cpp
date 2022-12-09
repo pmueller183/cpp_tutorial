@@ -35,6 +35,7 @@ void dist_cls::put_inches(int inches)
 	is_dirty_m = true;
 } // put_inches
 
+#if 0
 string dist_cls::to_string() const
 {
 	string ans;
@@ -43,6 +44,18 @@ string dist_cls::to_string() const
 			std::to_string(inches_m) + " inches";
 	return ans;
 } // to_string
+#endif
+
+dist_cls::operator std::string() const
+{
+	string ans;
+	normalize();
+	ans = std::to_string(feet_m) + " feet, " + 
+			std::to_string(inches_m) + " inches";
+	return ans;
+} // operator std::string
+
+
 
 void dist_cls::normalize() const
 {
@@ -101,7 +114,8 @@ int const &dist_cls::operator[](int ndx) const
 
 ostream &operator<<(ostream &output, dist_cls const &the_dist)
 {
-	output << the_dist.to_string();
+	//output << the_dist.to_string();
+	output << string(the_dist);
 	return output;
 } // ostream
 

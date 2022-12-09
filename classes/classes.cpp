@@ -66,10 +66,17 @@ static void _caller_const_hf(dist_cls *foo, dist_cls const &ans)
 
 } // _caller_const_hf
 
+static void _show_string_hf(string const &scrstr)
+{
+	cout << "_show_string_hf: >" << scrstr << "<\n";
+} // _show_string_hf
+
 static void _caller_hf()
 {
 	dist_cls dist0th(-1, 14), dist1st(5, -5), dist2nd;
 	
+	_show_string_hf(to_string(dist0th));
+
 	_caller_const_hf(&dist0th, dist1st);
 
 	cout << "Enter the value of object: ";
