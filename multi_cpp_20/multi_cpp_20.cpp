@@ -12,6 +12,22 @@ using std::cout;
 using std::endl;
 using std::atomic_wait;
 
+static void _make_rnd_eng_hf(std::mt19937 *rnd_eng)
+{
+	std::random_device rnd_dev;
+	std::seed_seq rnd_seed{rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev(),
+			rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev()};
+
+	*rnd_eng = std::mt19937(rnd_seed);
+} // _make_rnd_eng_hf
+
+template<class rnd_generator>
+static int _uniform_int_hf(rnd_generator &generator, int min, int max)
+{
+	std::uniform_int_distribution<int> distribution(min,max);
+	return distribution(generator);
+} // _uniform_int_hf
+
 typedef enum{wait_for_start_kf, do_start_kf, ready_for_work_kf, do_work_kf, done_kf}
 		thread_state_enm;
 typedef std::atomic<thread_state_enm> atomic_thread_state_enm;
@@ -21,6 +37,10 @@ typedef std::vector<state_ptr> state_vec;
 static void _do_some_work_hf(int thread_id, std::mutex *cout_guard, 
 		atomic_thread_state_enm *the_state)
 {
+	int sleep_mlls;
+	std::mt19937 rnd_eng;
+	_make_rnd_eng_hf(&rnd_eng);
+
 	// don't start until caller sets state variable to 1
 	atomic_wait(the_state, wait_for_start_kf);
 
@@ -28,6 +48,10 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 	std::string scrstr;
 
 	data = thread_id;
+
+	// sleep for a random amount of time (simulate long initialization)
+	sleep_mlls = _uniform_int_hf(rnd_eng, 100, 300);
+	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls));
 
 	{
 		std::lock_guard<std::mutex> lock(*cout_guard);
@@ -45,6 +69,10 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 
 	// wait until caller sets state to 3
 	atomic_wait(the_state, ready_for_work_kf);
+
+	// sleep for a random amount of time (simulate long processing)
+	sleep_mlls = _uniform_int_hf(rnd_eng, 100, 300);
+	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls));
 
 	scrstr = std::to_string(data);
 	{
@@ -74,15 +102,6 @@ static void _zap_states_hf(state_vec *the_states)
 	} // for ii
 } // _zap_states_hf
 
-static void _make_rnd_eng_hf(std::mt19937 *rnd_eng)
-{
-	std::random_device rnd_dev;
-	std::seed_seq rnd_seed{rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev(),
-			rnd_dev(), rnd_dev(), rnd_dev(), rnd_dev()};
-
-	*rnd_eng = std::mt19937(rnd_seed);
-}
-
 
 int main()
 {
@@ -91,8 +110,6 @@ int main()
 
 	std::mutex cout_guard; // make sure cout calls are not interleaved
 	std::mt19937 rnd_eng;
-	std::vector<int> startup_order; // order the threads will start; this will
-	                                // be randomized
 
 	_make_rnd_eng_hf(&rnd_eng);
 
@@ -108,12 +125,9 @@ int main()
 			the_states.push_back(the_state);
 			the_threads.push_back(
 					std::thread(_do_some_work_hf, ii, &cout_guard, the_state));
-			startup_order.push_back(ii);
 		} // for ii
 
-		// startup threads in random order
-		std::shuffle(startup_order.begin(), startup_order.end(), rnd_eng);
-		for(auto &ii : startup_order)
+		for(int ii = 0; ii < num_threads_k; ++ii)
 		{
 			*(the_states[ii]) = do_start_kf;
 			the_states[ii]->notify_one();
@@ -139,7 +153,7 @@ int main()
 			}
 		} // *(the_states[0]) != done_kf
 
-		if(0 == rnd_eng() % 4)
+		if(0 == _uniform_int_hf(rnd_eng, 0, 3))
 			throw 3;
 
 		cout << "end of try\n";

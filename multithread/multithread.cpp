@@ -20,6 +20,13 @@ static void _make_rnd_eng_hf(std::mt19937 *rnd_eng)
 	*rnd_eng = std::mt19937(rnd_seed);
 } // _make_rnd_eng_hf
 
+template<class rnd_generator>
+static int _uniform_int_hf(rnd_generator &generator, int min, int max)
+{
+	std::uniform_int_distribution<int> distribution(min,max);
+	return distribution(generator);
+} // _uniform_int_hf
+
 typedef std::unique_lock<std::mutex> unique_lock_mutex;
 
 typedef enum{wait_for_start_kf, do_start_kf, ready_for_work_kf, do_work_kf, done_kf}
@@ -47,14 +54,6 @@ public:
 }; // sync_cls
 typedef sync_cls *sync_cls_ptr;
 typedef std::vector<sync_cls_ptr> sync_cls_vec;
-
-template<class rnd_generator>
-static int _uniform_int_hf(rnd_generator &generator, int min, int max)
-{
-	std::uniform_int_distribution<int> distribution(min,max);
-	return distribution(generator);
-} // _uniform_int_hf
-
 
 static void _do_some_work_hf(int thread_id, std::mutex *cout_guard, 
 		sync_cls *the_sync)
