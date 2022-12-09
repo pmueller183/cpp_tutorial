@@ -1,3 +1,7 @@
-classes: add to_string function to dist_cls
-multithread: better wait at end
-multi_cpp_20: better wait at end
+classes:
+	add std::to_string function to dist_cls
+multithread / multi_cpp_20:
+	ers (ensure_release_struct)
+	rnd_eng thread safe?
+multithread:
+	future
