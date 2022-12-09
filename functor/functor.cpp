@@ -11,6 +11,15 @@ struct abs_value_ftr
 	int   operator()(int   val) { return val >= 0 ? val : -val; }
 }; // abs_value_ftr
 
+class line_ftr
+{
+private:
+	double m, b;
+public:
+	line_ftr(double slope = 1.0, double intercept = 0.0): m(slope), b(intercept){};
+	inline double operator()(double exx) {return m * exx + b;}
+}; // line_ftr
+
 int main()
 {
 	cout << endl;
@@ -23,5 +32,14 @@ int main()
 	int_val = -13;
 	cout << "flt_val " << flt_val << " abs " << abs_value(flt_val) << endl;
 	cout << "int_val " << int_val << " abs " << abs_value(int_val) << endl;
+
+	line_ftr line0th, line1st(5.0, 10.0);
+
+	double const why0th = line0th(20.0);
+	double const why1st = line1st(5.0);
+
+	cout << "whys are " << why0th << ", " << why1st << endl;
+
+
 } // main
 
