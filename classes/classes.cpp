@@ -74,8 +74,14 @@ static void _show_string_hf(string const &scrstr)
 static void _caller_hf()
 {
 	dist_cls dist0th(-1, 14), dist1st(5, -5), dist2nd;
-	
+	string scrstr;
+
 	_show_string_hf(to_string(dist0th));
+	_show_string_hf(dist0th);
+	scrstr = dist0th;
+	_show_string_hf(scrstr);
+	scrstr = "explicit cast " +  static_cast<string>(dist0th);
+	_show_string_hf(scrstr);
 
 	_caller_const_hf(&dist0th, dist1st);
 

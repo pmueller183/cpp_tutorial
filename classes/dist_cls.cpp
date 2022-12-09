@@ -55,8 +55,6 @@ dist_cls::operator std::string() const
 	return ans;
 } // operator std::string
 
-
-
 void dist_cls::normalize() const
 {
 	if(is_dirty_m)
@@ -115,7 +113,8 @@ int const &dist_cls::operator[](int ndx) const
 ostream &operator<<(ostream &output, dist_cls const &the_dist)
 {
 	//output << the_dist.to_string();
-	output << string(the_dist);
+	//output << the_dist;
+	output << static_cast<string>(the_dist);
 	return output;
 } // ostream
 
