@@ -55,6 +55,8 @@ public:
 typedef sync_cls *sync_cls_ptr;
 typedef std::vector<sync_cls_ptr> sync_cls_vec;
 
+static thread_local int the_id_t;
+
 static void _do_some_work_hf(int thread_id, std::mutex *cout_guard, 
 		sync_cls *the_sync)
 {
@@ -73,6 +75,7 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 	std::string scrstr;
 
 	data = thread_id;
+	the_id_t = data;
 
 	// sleep for a random amount of time (simulate long initialization)
 	sleep_mlls = _uniform_int_hf(rnd_eng, 100, 300);
@@ -80,11 +83,15 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 
 	{
 		std::lock_guard<std::mutex> lock(*cout_guard);
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		cout << "the _do_some_work_hf ";
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-		cout << "id " << std::setw(2) << data << " function is running on another ";
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		cout << "id " << std::setw(2) << data;
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		cout << " a/k/a " << std::setw(2) << the_id_t;
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
+		cout << " function is running on another ";
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		cout << "thread\n";
 	};
 
@@ -106,13 +113,13 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 	sleep_mlls = _uniform_int_hf(rnd_eng, 100, 300);
 	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls));
 
-	scrstr = std::to_string(data);
+	scrstr = std::to_string(data) + "(" + std::to_string(the_id_t) + ")";
 	{
 		std::lock_guard<std::mutex> lock(*cout_guard);
 		cout << "The function call ";
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		cout << "by worker thread " << std::setw(2) << scrstr << " ";
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
+		std::this_thread::sleep_for(std::chrono::milliseconds(5));
 		cout << "has ended.\n";
 	}
 
@@ -164,6 +171,7 @@ int main()
 			ers.the_threads.push_back(
 					std::thread(_do_some_work_hf, ii, &cout_guard, the_sync));
 			the_states.push_back(wait_for_start_kf);
+			the_id_t = _uniform_int_hf(rnd_eng, 88, 99);
 		} // for ii
 
 		for(int ii = num_threads_k-1; ii >= 0; --ii)
