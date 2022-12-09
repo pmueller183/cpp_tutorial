@@ -1,6 +1,8 @@
 //345678911234567892123456789312345678941234567895123456789612345678971234567898123456-
 
 #include <iostream>
+#include <vector>
+#include <algorithm>
 
 using std::cout;
 using std::endl;
@@ -19,6 +21,11 @@ public:
 	line_ftr(double slope = 1.0, double intercept = 0.0): m(slope), b(intercept){};
 	inline double operator()(double exx) {return m * exx + b;}
 }; // line_ftr
+
+struct print_ftr
+{
+	std::ostream &operator()(int val) { return cout << val << " "; }
+}; // print_ftr
 
 int main()
 {
@@ -40,6 +47,12 @@ int main()
 
 	cout << "whys are " << why0th << ", " << why1st << endl;
 
+	std::vector<int> int_vec;
+	print_ftr print_it;
+	for(int ii = 0; ii < 10; ++ii)
+		int_vec.push_back(ii);
+	std::for_each(int_vec.begin(), int_vec.end(), print_it);
+	cout << endl;
 
 } // main
 
