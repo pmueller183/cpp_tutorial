@@ -112,15 +112,18 @@ static void _do_some_work_hf(int thread_id, std::mutex *cout_guard,
 
 int main()
 {
-	std::vector<std::thread> the_threads;
 	try
 	{
-
 		struct ensure_release_sct
 		{
+			std::vector<std::thread> the_threads;
 			sync_cls_vec the_syncs;
 			~ensure_release_sct()
 			{
+				std::cerr << "joining threads...";
+				for(auto &ii:the_threads)
+					ii.join();
+				std::cerr << "done\n";
 				for(sync_cls_vec::reverse_iterator ii = the_syncs.rbegin();
 					 ii != the_syncs.rend();
 					 ++ii)
@@ -130,7 +133,6 @@ int main()
 				} // for ii
 			}
 		} ers; // ensure_release_struct
-
 
 		int const num_threads_k = 6;
 		std::vector<sub_thread_enm> the_states;
@@ -144,7 +146,7 @@ int main()
 			sync_cls_ptr the_sync;
 			the_sync = new sync_cls;
 			ers.the_syncs.push_back(the_sync);
-			the_threads.push_back(
+			ers.the_threads.push_back(
 					std::thread(_do_some_work_hf, ii, &cout_guard, the_sync));
 			the_states.push_back(wait_for_start_kf);
 		} // for ii
@@ -198,13 +200,9 @@ int main()
 		std::cerr << "CATCH err\n";
 		// Need to tell all the threads to terminate, which I don't feel
 		// like doing right now.
-		for(auto &ii:the_threads)
-			ii.join();
 		throw;
 	}
 
-	for(auto &ii:the_threads)
-		ii.join();
 	cout << "end of main\n";
 
 } // main
