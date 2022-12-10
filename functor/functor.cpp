@@ -9,6 +9,8 @@
 using std::cout;
 using std::endl;
 
+typedef std::vector<int> int_vec;
+
 struct abs_value_ftr
 {
 	float operator()(float val) { return val >= 0 ? val : -val; }
@@ -47,6 +49,9 @@ inline void print_agg(aggregate const &agg, int wdth = 6)
 		cout << endl;
 }
 
+static void _erase_lt_3_hf(int_vec *the_vec)
+{
+} // _erase_lt_3_hf
 
 int main()
 {
@@ -70,11 +75,11 @@ int main()
 	cout << endl;
 
 	{
-		std::vector<int> int_vec;
+		int_vec the_vec;
 		print_ftr<int> print_int;
 		for(int ii = 0; ii < 10; ++ii)
-			int_vec.push_back(ii);
-		std::for_each(int_vec.begin(), int_vec.end(), print_int);
+			the_vec.push_back(ii);
+		std::for_each(the_vec.begin(), the_vec.end(), print_int);
 		cout << endl;
 		cout << endl;
 	}
@@ -82,13 +87,13 @@ int main()
 	{
 		int const size_k = 5;
 		print_ftr<int> print_int;
-		std::vector<int> int_vec;
+		int_vec the_vec;
 		for(int ii = 0; ii < size_k; ++ii)
-			int_vec.push_back(ii);
-		std::for_each(int_vec.begin(), int_vec.end(), print_int);
+			the_vec.push_back(ii);
+		std::for_each(the_vec.begin(), the_vec.end(), print_int);
 		cout << endl;
-		std::for_each(int_vec.begin(), int_vec.end(), incr_val<2>);
-		std::for_each(int_vec.begin(), int_vec.end(), print_int);
+		std::for_each(the_vec.begin(), the_vec.end(), incr_val<2>);
+		std::for_each(the_vec.begin(), the_vec.end(), print_int);
 		cout << endl;
 		cout << endl;
 	}
@@ -96,31 +101,29 @@ int main()
 	{
 		int const size_k = 5;
 		print_ftr<int> print_int;
-		std::vector<int> int_vec;
-		std::vector<int> multiplicand;
-		std::vector<int> ans;
+		int_vec the_vec, multiplicand, ans;
 		for(int ii = 0; ii < size_k; ++ii)
 		{
-			int_vec.push_back(ii);
+			the_vec.push_back(ii);
 			multiplicand.push_back(1 + ii);
 			ans.push_back(-100);
 		}
-		std::for_each(int_vec.begin(), int_vec.end(), print_int);
+		std::for_each(the_vec.begin(), the_vec.end(), print_int);
 		cout << endl;
 		std::transform(
-				int_vec.begin(), int_vec.end(),
-				int_vec.begin(),
+				the_vec.begin(), the_vec.end(),
+				the_vec.begin(),
 				std::negate<void>());
-		std::for_each(int_vec.begin(), int_vec.end(), print_int);
+		std::for_each(the_vec.begin(), the_vec.end(), print_int);
 		cout << endl;
 
 		cout << endl;
 		std::transform(
-				int_vec.begin(), int_vec.end(),
+				the_vec.begin(), the_vec.end(),
 				multiplicand.begin(),
 				ans.begin(),
 				std::multiplies<void>());
-		print_agg(int_vec, 3);
+		print_agg(the_vec, 3);
 		cout << "mutiply by\n";
 		print_agg(multiplicand, 3);
 		cout << "gives\n";
@@ -166,5 +169,40 @@ int main()
 		print_agg(ans);
 		cout << endl;
 	}
+
+	{ // bind2nd
+		cout << "bind2nd\n";
+		int const size_k = 6;
+		int_vec the_vec, backup_vec;
+		for(auto ii = 0; ii < size_k; ++ii)
+			the_vec.push_back(ii);
+		print_agg(the_vec, 4);
+		std::replace_if(the_vec.begin(), the_vec.end(),
+				std::bind2nd(std::equal_to<int>(),0), 101);
+		print_agg(the_vec, 4);
+
+		the_vec.push_back(1);
+		the_vec.insert(the_vec.begin(), -1);
+		print_agg(the_vec, 4);
+		// this remove values less than 3
+		// if I have to write a comment, it's too complicated
+		backup_vec = the_vec;
+		the_vec.erase(
+				std::remove_if(the_vec.begin(), the_vec.end(),
+						std::bind2nd(std::less<int>(), 3)), the_vec.end());
+		print_agg(the_vec, 4);
+
+		the_vec = backup_vec;
+		backup_vec = the_vec;
+		print_agg(the_vec, 4);
+		_erase_lt_3_hf(&the_vec);
+		print_agg(the_vec, 4);
+
+#if 0
+		transform(v.begin(), v.end(),
+					 ostream_iterator<int>(cout, " "),           
+			  negate<int>()); 
+#endif
+	} // bind2nd
 } // main
 
