@@ -3,6 +3,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <list>
 #include <algorithm>
 #include <functional>
 
@@ -10,6 +11,7 @@ using std::cout;
 using std::endl;
 
 typedef std::vector<int> int_vec;
+typedef std::list<int> int_lst;
 
 struct abs_value_ftr
 {
@@ -49,21 +51,38 @@ inline void print_agg(aggregate const &agg, int wdth = 6)
 		cout << endl;
 }
 
-static void _erase_lt_3_hf(int_vec *the_vec)
+static bool _lt_3_hf(int val)
 {
-	int_vec::iterator ii, prev;
-	ii = the_vec->end() - 1;
-	while(ii > the_vec->begin())
+	return val < 3;
+}
+
+// returns lesser or larger value
+template<class ordered>
+inline ordered lesser(ordered ab, ordered cd)
+{
+	return ab < cd ? ab : cd;
+}
+
+
+
+template <class agg_cls, typename fptr>
+static void _erase_bool_hf(agg_cls *the_vec, fptr func)
+{
+	typename agg_cls::iterator ii, prev;
+	ii = the_vec->end();
+	--ii;
+	while(ii != the_vec->begin())
 	{
-		prev = ii - 1;
-		if(*ii < 3)
+		prev = ii;
+		--prev;
+		if((func)(*ii))
 			the_vec->erase(ii);
 		ii = prev;
 	}
-	if(*ii < 3)
+	if((func)(*ii))
 		the_vec->erase(ii);
 
-} // _erase_lt_3_hf
+} // _erase_bool_hf
 
 int main()
 {
@@ -183,7 +202,49 @@ int main()
 	}
 
 	{ // bind2nd
-		cout << "bind2nd\n";
+		cout << "int_vec bind2nd\n";
+		int const size_k = 6;
+		int_lst the_vec, backup_vec;
+		for(auto ii = 0; ii < size_k; ++ii)
+			the_vec.push_back(ii);
+		print_agg(the_vec, 4);
+		std::replace_if(the_vec.begin(), the_vec.end(),
+				std::bind2nd(std::equal_to<int>(),0), 101);
+		print_agg(the_vec, 4);
+
+		the_vec.push_back(1);
+		the_vec.insert(the_vec.begin(), -1);
+		print_agg(the_vec, 4);
+
+		// this remove values less than 3
+		// if I have to write a comment, it's too complicated
+		cout << "using overly complicated expression:\n";
+		backup_vec = the_vec;
+		the_vec.erase(
+				std::remove_if(the_vec.begin(), the_vec.end(),
+						std::bind2nd(std::less<int>(), 3)), the_vec.end());
+		print_agg(the_vec, 4);
+		cout << endl;
+
+		cout << "using boolean function:\n";
+		the_vec = backup_vec;
+		print_agg(the_vec, 4);
+		_erase_bool_hf(&the_vec, _lt_3_hf);
+		print_agg(the_vec, 4);
+		cout << endl;
+
+		cout << "using std::less predicate:\n";
+		the_vec = backup_vec;
+		print_agg(the_vec, 4);
+		_erase_bool_hf(&the_vec, std::bind2nd(std::less<int>(), 3));
+		print_agg(the_vec, 4);
+		cout << endl;
+
+		cout << endl;
+	} // bind2nd
+
+	{ // bind2nd
+		cout << "int_lst bind2nd\n";
 		int const size_k = 6;
 		int_vec the_vec, backup_vec;
 		for(auto ii = 0; ii < size_k; ++ii)
@@ -199,23 +260,31 @@ int main()
 
 		// this remove values less than 3
 		// if I have to write a comment, it's too complicated
+		cout << "using overly complicated expression:\n";
 		backup_vec = the_vec;
 		the_vec.erase(
 				std::remove_if(the_vec.begin(), the_vec.end(),
 						std::bind2nd(std::less<int>(), 3)), the_vec.end());
 		print_agg(the_vec, 4);
+		cout << endl;
 
+		cout << "using boolean function:\n";
 		the_vec = backup_vec;
-		backup_vec = the_vec;
 		print_agg(the_vec, 4);
-		_erase_lt_3_hf(&the_vec);
+		_erase_bool_hf(&the_vec, _lt_3_hf);
 		print_agg(the_vec, 4);
+		cout << endl;
 
-#if 0
-		transform(v.begin(), v.end(),
-					 ostream_iterator<int>(cout, " "),           
-			  negate<int>()); 
-#endif
+		cout << "using std::less predicate:\n";
+		the_vec = backup_vec;
+		print_agg(the_vec, 4);
+		_erase_bool_hf(&the_vec, std::bind2nd(std::less<int>(), 3));
+		print_agg(the_vec, 4);
+		cout << endl;
+
+		cout << endl;
 	} // bind2nd
+
+
 } // main
 
