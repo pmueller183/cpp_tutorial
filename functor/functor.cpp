@@ -51,6 +51,18 @@ inline void print_agg(aggregate const &agg, int wdth = 6)
 
 static void _erase_lt_3_hf(int_vec *the_vec)
 {
+	int_vec::iterator ii, prev;
+	ii = the_vec->end() - 1;
+	while(ii > the_vec->begin())
+	{
+		prev = ii - 1;
+		if(*ii < 3)
+			the_vec->erase(ii);
+		ii = prev;
+	}
+	if(*ii < 3)
+		the_vec->erase(ii);
+
 } // _erase_lt_3_hf
 
 int main()
@@ -184,6 +196,7 @@ int main()
 		the_vec.push_back(1);
 		the_vec.insert(the_vec.begin(), -1);
 		print_agg(the_vec, 4);
+
 		// this remove values less than 3
 		// if I have to write a comment, it's too complicated
 		backup_vec = the_vec;
