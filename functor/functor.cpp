@@ -56,15 +56,6 @@ static bool _lt_3_hf(int val)
 	return val < 3;
 }
 
-// returns lesser or larger value
-template<class ordered>
-inline ordered lesser(ordered ab, ordered cd)
-{
-	return ab < cd ? ab : cd;
-}
-
-
-
 template <class agg_cls, typename fptr>
 static void _erase_bool_hf(agg_cls *the_vec, fptr func)
 {
@@ -75,11 +66,11 @@ static void _erase_bool_hf(agg_cls *the_vec, fptr func)
 	{
 		prev = ii;
 		--prev;
-		if((func)(*ii))
+		if(func(*ii))
 			the_vec->erase(ii);
 		ii = prev;
 	}
-	if((func)(*ii))
+	if(func(*ii))
 		the_vec->erase(ii);
 
 } // _erase_bool_hf
@@ -214,31 +205,29 @@ int main()
 
 		the_vec.push_back(1);
 		the_vec.insert(the_vec.begin(), -1);
-		print_agg(the_vec, 4);
+		backup_vec = the_vec;
 
 		// this remove values less than 3
 		// if I have to write a comment, it's too complicated
 		cout << "using overly complicated expression:\n";
-		backup_vec = the_vec;
+		the_vec = backup_vec;
+		print_agg(the_vec, 4);
 		the_vec.erase(
 				std::remove_if(the_vec.begin(), the_vec.end(),
 						std::bind2nd(std::less<int>(), 3)), the_vec.end());
 		print_agg(the_vec, 4);
-		cout << endl;
 
 		cout << "using boolean function:\n";
 		the_vec = backup_vec;
 		print_agg(the_vec, 4);
 		_erase_bool_hf(&the_vec, _lt_3_hf);
 		print_agg(the_vec, 4);
-		cout << endl;
 
 		cout << "using std::less predicate:\n";
 		the_vec = backup_vec;
 		print_agg(the_vec, 4);
 		_erase_bool_hf(&the_vec, std::bind2nd(std::less<int>(), 3));
 		print_agg(the_vec, 4);
-		cout << endl;
 
 		cout << endl;
 	} // bind2nd
@@ -256,31 +245,29 @@ int main()
 
 		the_vec.push_back(1);
 		the_vec.insert(the_vec.begin(), -1);
-		print_agg(the_vec, 4);
+		backup_vec = the_vec;
 
 		// this remove values less than 3
 		// if I have to write a comment, it's too complicated
 		cout << "using overly complicated expression:\n";
-		backup_vec = the_vec;
+		the_vec = backup_vec;
+		print_agg(the_vec, 4);
 		the_vec.erase(
 				std::remove_if(the_vec.begin(), the_vec.end(),
 						std::bind2nd(std::less<int>(), 3)), the_vec.end());
 		print_agg(the_vec, 4);
-		cout << endl;
 
 		cout << "using boolean function:\n";
 		the_vec = backup_vec;
 		print_agg(the_vec, 4);
 		_erase_bool_hf(&the_vec, _lt_3_hf);
 		print_agg(the_vec, 4);
-		cout << endl;
 
 		cout << "using std::less predicate:\n";
 		the_vec = backup_vec;
 		print_agg(the_vec, 4);
 		_erase_bool_hf(&the_vec, std::bind2nd(std::less<int>(), 3));
 		print_agg(the_vec, 4);
-		cout << endl;
 
 		cout << endl;
 	} // bind2nd
