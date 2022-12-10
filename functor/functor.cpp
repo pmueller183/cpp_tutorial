@@ -39,6 +39,15 @@ void incr_val(int &elem)
 	elem += val;
 } // set_val
 
+template<class aggregate>
+inline void print_agg(aggregate const &agg, int wdth = 6)
+{
+	for(auto const &ii : agg)
+		cout << std::setw(wdth) << ii << " ";
+		cout << endl;
+}
+
+
 int main()
 {
 	cout << endl;
@@ -111,14 +120,50 @@ int main()
 				multiplicand.begin(),
 				ans.begin(),
 				std::multiplies<void>());
-		std::for_each(int_vec.begin(), int_vec.end(), print_int);
-		cout << endl;
+		print_agg(int_vec, 3);
 		cout << "mutiply by\n";
-		std::for_each(multiplicand.begin(), multiplicand.end(), print_int);
-		cout << endl;
+		print_agg(multiplicand, 3);
 		cout << "gives\n";
-		std::for_each(ans.begin(), ans.end(), print_int);
+		print_agg(ans, 3);
 		cout << endl;
+	}
+
+	{
+		int const size_k = 5;
+		std::vector<float> flt_vec;
+		std::vector<float> multiplicand;
+		std::vector<float> ans;
+		for (int ii = 0; ii < size_k; ++ii)
+		{
+			flt_vec.push_back(ii + 0.1f);
+			multiplicand.push_back(1.0f + ii);
+			ans.push_back(-100.0f);
+		}
+		print_agg(flt_vec);
+		std::transform(
+				flt_vec.begin(), flt_vec.end(),
+				flt_vec.begin(),
+				std::negate<void>());
+		print_agg(flt_vec);
+		cout << endl;
+
+		std::transform(
+				flt_vec.begin(), flt_vec.end(),
+				flt_vec.begin(),
+				std::negate<void>());
+		print_agg(flt_vec);
+		cout << endl;
+
+		std::transform(
+			flt_vec.begin(), flt_vec.end(),
+			multiplicand.begin(),
+			ans.begin(),
+			std::multiplies<void>());
+		print_agg(flt_vec);
+		cout << "mutiply by\n";
+		print_agg(multiplicand);
+		cout << "gives\n";
+		print_agg(ans);
 		cout << endl;
 	}
 } // main
