@@ -98,14 +98,19 @@ int main()
 		}
 		std::for_each(int_vec.begin(), int_vec.end(), print_int);
 		cout << endl;
-		std::transform(int_vec.begin(), int_vec.end(), int_vec.begin(),
+		std::transform(
+				int_vec.begin(), int_vec.end(),
+				int_vec.begin(),
 				std::negate<void>());
 		std::for_each(int_vec.begin(), int_vec.end(), print_int);
 		cout << endl;
-		std::transform(int_vec.begin(), int_vec.end(), multiplicand.begin(),
-				ans.begin(), std::multiplies<void>());
 
 		cout << endl;
+		std::transform(
+				int_vec.begin(), int_vec.end(),
+				multiplicand.begin(),
+				ans.begin(),
+				std::multiplies<void>());
 		std::for_each(int_vec.begin(), int_vec.end(), print_int);
 		cout << endl;
 		cout << "mutiply by\n";
