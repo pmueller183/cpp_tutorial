@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 using std::cout;
 using std::endl;
@@ -79,5 +80,19 @@ int main()
 		cout << endl;
 	}
 
+	{
+		int const size_k = 5;
+		print_ftr<int> print_int;
+		std::vector<int> int_vec;
+		for(int ii = 0; ii < size_k; ++ii)
+			int_vec.push_back(ii);
+		std::for_each(int_vec.begin(), int_vec.end(), print_int);
+		cout << endl;
+		std::transform(int_vec.begin(), int_vec.end(), int_vec.begin(),
+				std::negate<void>());
+		std::for_each(int_vec.begin(), int_vec.end(), print_int);
+		cout << endl;
+		cout << endl;
+	}
 } // main
 
