@@ -1,6 +1,7 @@
 //345678911234567892123456789312345678941234567895123456789612345678971234567898123456-
 
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <algorithm>
 #include <functional>
@@ -26,7 +27,10 @@ public:
 template <typename T>
 struct print_ftr
 {
-	std::ostream &operator()(T const &val) { return cout << val << " "; }
+	std::ostream &operator()(T const &val)
+	{ 
+		return cout << std::setw(3) << val << " "; 
+	}
 }; // print_ftr
 
 template <int val>
@@ -84,13 +88,31 @@ int main()
 		int const size_k = 5;
 		print_ftr<int> print_int;
 		std::vector<int> int_vec;
+		std::vector<int> multiplicand;
+		std::vector<int> ans;
 		for(int ii = 0; ii < size_k; ++ii)
+		{
 			int_vec.push_back(ii);
+			multiplicand.push_back(1 + ii);
+			ans.push_back(-100);
+		}
 		std::for_each(int_vec.begin(), int_vec.end(), print_int);
 		cout << endl;
 		std::transform(int_vec.begin(), int_vec.end(), int_vec.begin(),
 				std::negate<void>());
 		std::for_each(int_vec.begin(), int_vec.end(), print_int);
+		cout << endl;
+		std::transform(int_vec.begin(), int_vec.end(), multiplicand.begin(),
+				ans.begin(), std::multiplies<void>());
+
+		cout << endl;
+		std::for_each(int_vec.begin(), int_vec.end(), print_int);
+		cout << endl;
+		cout << "mutiply by\n";
+		std::for_each(multiplicand.begin(), multiplicand.end(), print_int);
+		cout << endl;
+		cout << "gives\n";
+		std::for_each(ans.begin(), ans.end(), print_int);
 		cout << endl;
 		cout << endl;
 	}
