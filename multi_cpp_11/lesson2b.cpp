@@ -1,12 +1,8 @@
 //345678911234567892123456789312345678941234567895123456789612345678971234567898123456-
 
-#if 0
-
 #include "lessons.h"
 
 #include <vector>
-
-#include <random>
 
 #include <thread>
 #include <mutex>
@@ -18,43 +14,13 @@ typedef std::lock_guard<std::mutex> lock_mutex;
 using std::cout;
 using std::endl;
 
-#include "bounded_buffer.h"
-
-int const sleep_mlls_kf = 100;
-
-struct cpx_sct
-{
-	std::recursive_mutex mutex_m;
-	int val_m;
-
-	cpx_sct() : val_m(100) {}
-
-	void mul(int x)
-	{
-		std::lock_guard<std::recursive_mutex> lock(mutex_m);
-		val_m *= x;
-	} // mul
-
-	void div(int x)
-	{
-		std::lock_guard<std::recursive_mutex> lock(mutex_m);
-		val_m /= x;
-	} // div
-
-	void muldiv(int x, int y)
-	{
-		std::lock_guard<std::recursive_mutex> lock(mutex_m);
-		mul(x);
-		div(y);
-	} // muldiv
-}; // cpx_sct
-
 static void _call_once_hf(std::thread::id const &thread_id)
 {
 	cout << "called once by thread " << thread_id << endl;
 } // _call_once_hf
 
-static void _timed_work_hf(std::once_flag *the_flag, std::mutex *cout_guard, std::timed_mutex *mutex)
+static void _timed_work_hf(std::once_flag *the_flag, 
+		std::mutex *cout_guard, std::timed_mutex *mutex)
 {
 	std::chrono::milliseconds const timeout_k(30);
 
@@ -87,53 +53,8 @@ static void _timed_work_hf(std::once_flag *the_flag, std::mutex *cout_guard, std
 	} // while(true)
 } // _timed_work_hf
 
-void _consumer_hf(int ndx, std::mutex *cout_guard, bounded_buffer_cls *buffer)
+void lesson2b()
 {
-	for(auto ii = 0; ii < 50; ++ii)
-	{
-		int const val = buffer->fetch();
-		{
-			lock_mutex dummy(*cout_guard);
-			cout << "consumer " << ndx << " fetched  " << std::setw(4) << val << endl;	
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
-	} // for ii
-} // _consumer_hf
-
-void _producer_hf(int ndx, std::mutex *cout_guard, bounded_buffer_cls *buffer)
-{
-	for(auto ii = 0; ii < 75; ++ii)
-	{
-		int const val = ndx * 100 + ii;
-		buffer->deposit(val);
-		{
-			lock_mutex dummy(*cout_guard);
-			cout << "producer " << ndx << " produced " << std::setw(4) << val << endl;
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(20));
-	} // for ii
-} // _producer_hf
-
-void lesson2a()
-{
-	{ // complex
-		cpx_sct the_cpx;
-		int backup_val;
-		backup_val = the_cpx.val_m;
-
-		the_cpx.val_m = backup_val;
-		the_cpx.mul(10);
-		the_cpx.div(20);
-		cout << "the_cpx " << the_cpx.val_m << endl;
-
-		the_cpx.val_m = backup_val;
-		the_cpx.muldiv(10, 20);
-		cout << "the_cpx " << the_cpx.val_m << endl;
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_kf));
-		cout << "hopefully done\n\n";
-	} // complex
-	
 	{ // timed_work
 		std::once_flag once_flag;
 		std::mutex cout_guard;
@@ -146,9 +67,8 @@ void lesson2a()
 		for(auto &ii : the_threads)
 			ii.join();
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_kf));
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
 		cout << "hopefully done\n\n";
 	} // timed_work
 
-} // lesson2nd
-#endif
+} // lesson2b
