@@ -1,5 +1,3 @@
-multithread:
-	future
-
 lambdas
 
+circle back around to another concurrency tutorial
