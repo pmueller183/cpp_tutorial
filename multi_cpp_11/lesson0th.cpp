@@ -12,8 +12,6 @@ typedef std::vector<std::thread> thread_vec;
 using std::cout;
 using std::endl;
 
-int const sleep_mlls_kf = 100;
-
 static void _hello_hf()
 {
 	cout << "func thread " << std::this_thread::get_id() << endl;;
@@ -34,7 +32,7 @@ void lesson0th()
 	for(auto &ii: func_threads)
 		ii.join();
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_kf));
+	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
 	cout << "hopefully done\n\n";
 } // main
 

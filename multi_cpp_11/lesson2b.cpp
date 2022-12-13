@@ -1,8 +1,8 @@
 //345678911234567892123456789312345678941234567895123456789612345678971234567898123456-
 
-#include "lessons.h"
+#if 0
 
-static int const _lesson_ndx_kf = 2;
+#include "lessons.h"
 
 #include <vector>
 
@@ -114,7 +114,7 @@ void _producer_hf(int ndx, std::mutex *cout_guard, bounded_buffer_cls *buffer)
 	} // for ii
 } // _producer_hf
 
-void lesson2nd()
+void lesson2a()
 {
 	{ // complex
 		cpx_sct the_cpx;
@@ -150,20 +150,5 @@ void lesson2nd()
 		cout << "hopefully done\n\n";
 	} // timed_work
 
-	{ // consumer / producer
-		std::mutex cout_guard;
-		bounded_buffer_cls buffer(20);
-
-		std::thread c0(_consumer_hf, 0, &cout_guard, &buffer);
-		std::thread c1(_consumer_hf, 1, &cout_guard, &buffer);
-		std::thread c2(_consumer_hf, 2, &cout_guard, &buffer);
-		std::thread p0(_producer_hf, 0, &cout_guard, &buffer);
-		std::thread p1(_producer_hf, 1, &cout_guard, &buffer);
-
-		c0.join(); c1.join(); c2.join(); p0.join(); p1.join();
-		
-	} // consumer / producer
-
 } // lesson2nd
-
-
+#endif

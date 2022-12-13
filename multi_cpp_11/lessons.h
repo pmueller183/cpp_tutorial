@@ -2,8 +2,12 @@
 
 #pragma once
 
+int const sleep_mlls_ke = 100;
+
 void lesson0th();
 void lesson1st();
-void lesson2nd();
+void lesson2a();
+void lesson2b();
+void lesson2c();
 void lesson3rd();
 void lesson4th();

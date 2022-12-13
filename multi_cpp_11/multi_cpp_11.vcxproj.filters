@@ -27,7 +27,13 @@
     <ClCompile Include="lesson1st.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lesson2nd.cpp">
+    <ClCompile Include="lesson2a.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lesson2c.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lesson2b.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
