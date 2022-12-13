@@ -4,8 +4,6 @@
 
 #include <vector>
 
-#include <random>
-
 #include <thread>
 #include <mutex>
 typedef std::vector<std::thread> thread_vec;
@@ -15,10 +13,6 @@ typedef std::lock_guard<std::mutex> lock_mutex;
 #include <iomanip>
 using std::cout;
 using std::endl;
-
-#include "bounded_buffer.h"
-
-int const sleep_mlls_kf = 100;
 
 struct cpx_sct
 {
@@ -63,9 +57,7 @@ void lesson2a()
 		the_cpx.muldiv(10, 20);
 		cout << "the_cpx " << the_cpx.val_m << endl;
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_kf));
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
 		cout << "hopefully done\n\n";
 	} // complex
 } // lesson2nd
-
-
