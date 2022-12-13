@@ -18,6 +18,8 @@ int main()
 		lesson2b();
 	else if("2c" == _lesson_ndx_kf)
 		lesson2c();
+	else if("3rd" == _lesson_ndx_kf)
+		lesson3rd();
 
 } // main
 

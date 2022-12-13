@@ -47,20 +47,20 @@ void _producer_hf(int ndx,
 
 void lesson2c()
 {
-	{ // consumer / producer
-		std::mutex cout_guard;
-		bounded_buffer_cls buffer(20);
+	cout << "lesson2c:\n";
 
-		std::thread c0(_consumer_hf, 0, &cout_guard, &buffer);
-		std::thread c1(_consumer_hf, 1, &cout_guard, &buffer);
-		std::thread c2(_consumer_hf, 2, &cout_guard, &buffer);
-		std::thread p0(_producer_hf, 0, &cout_guard, &buffer);
-		std::thread p1(_producer_hf, 1, &cout_guard, &buffer);
+	std::mutex cout_guard;
+	bounded_buffer_cls buffer(20);
 
-		c0.join(); c1.join(); c2.join(); p0.join(); p1.join();
+	std::thread c0(_consumer_hf, 0, &cout_guard, &buffer);
+	std::thread c1(_consumer_hf, 1, &cout_guard, &buffer);
+	std::thread c2(_consumer_hf, 2, &cout_guard, &buffer);
+	std::thread p0(_producer_hf, 0, &cout_guard, &buffer);
+	std::thread p1(_producer_hf, 1, &cout_guard, &buffer);
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
-		cout << "hopefully done\n\n";
-	} // consumer / producer
+	c0.join(); c1.join(); c2.join(); p0.join(); p1.join();
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
+	cout << "lesson2c hopefully done\n";
 
 } // lesson2c
