@@ -55,20 +55,20 @@ static void _timed_work_hf(std::once_flag *the_flag,
 
 void lesson2b()
 {
-	{ // timed_work
-		std::once_flag once_flag;
-		std::mutex cout_guard;
-		std::timed_mutex mutex;
-		thread_vec the_threads;
+	std::once_flag once_flag;
+	std::mutex cout_guard;
+	std::timed_mutex mutex;
+	thread_vec the_threads;
 
-		for(auto ii = 0; ii < 4; ++ii)
-			the_threads.push_back(std::thread(
-					_timed_work_hf, &once_flag, &cout_guard, &mutex));
-		for(auto &ii : the_threads)
-			ii.join();
+	cout << "lesson2b:\n";
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
-		cout << "hopefully done\n\n";
-	} // timed_work
+	for(auto ii = 0; ii < 4; ++ii)
+		the_threads.push_back(std::thread(
+				_timed_work_hf, &once_flag, &cout_guard, &mutex));
+	for(auto &ii : the_threads)
+		ii.join();
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
+	cout << "lesson2b hopefully done\n";
 
 } // lesson2b

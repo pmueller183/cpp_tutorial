@@ -43,21 +43,22 @@ struct cpx_sct
 
 void lesson2a()
 {
-	{ // complex
-		cpx_sct the_cpx;
-		int backup_val;
-		backup_val = the_cpx.val_m;
 
-		the_cpx.val_m = backup_val;
-		the_cpx.mul(10);
-		the_cpx.div(20);
-		cout << "the_cpx " << the_cpx.val_m << endl;
+	cout << "lesson2a:\n";
 
-		the_cpx.val_m = backup_val;
-		the_cpx.muldiv(10, 20);
-		cout << "the_cpx " << the_cpx.val_m << endl;
+	cpx_sct the_cpx;
+	int backup_val;
+	backup_val = the_cpx.val_m;
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
-		cout << "hopefully done\n\n";
-	} // complex
+	the_cpx.val_m = backup_val;
+	the_cpx.mul(10);
+	the_cpx.div(20);
+	cout << "the_cpx " << the_cpx.val_m << endl;
+
+	the_cpx.val_m = backup_val;
+	the_cpx.muldiv(10, 20);
+	cout << "the_cpx " << the_cpx.val_m << endl;
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
+	cout << "lesson2a hopefully done\n";
 } // lesson2nd

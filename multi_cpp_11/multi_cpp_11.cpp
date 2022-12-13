@@ -4,7 +4,7 @@
 
 #include "lessons.h"
 
-static std::string const _lesson_ndx_kf = "2c";
+static std::string const _lesson_ndx_kf = "0th";
 
 int main()
 {

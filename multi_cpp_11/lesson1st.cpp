@@ -69,6 +69,8 @@ static void _counter_hf(counter_sct *val)
 
 void lesson1st()
 {
+	cout << "lesson1st:\n";
+
 	thread_vec the_threads;
 	counter_sct the_counter;
 	for(auto ii = 0; ii < 5; ++ii)
@@ -79,6 +81,6 @@ void lesson1st()
 			the_counter.num_exceptions_m << endl;
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
-	cout << "hopefully done\n\n";
+	cout << "lesson1st hopefully done\n";
 
 } // lesson1st

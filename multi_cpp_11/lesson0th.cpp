@@ -19,6 +19,8 @@ static void _hello_hf()
 
 void lesson0th()
 {
+	cout << "lesson0th:\n";
+
 	thread_vec func_threads, lambda_threads;
 	for(auto ii = 0; ii < 5; ++ii)
 	{
@@ -33,6 +35,6 @@ void lesson0th()
 		ii.join();
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
-	cout << "hopefully done\n\n";
+	cout << "lesson0th hopefully done\n";
 } // main
 
