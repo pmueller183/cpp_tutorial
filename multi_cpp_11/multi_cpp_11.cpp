@@ -100,15 +100,22 @@ struct cpx_sct
 	} // muldiv
 }; // cpx_sct
 
-static void _timed_work_hf(std::mutex *cout_guard, std::timed_mutex *mutex)
+static void _call_once_hf(std::thread::id const &thread_id)
 {
-	std::chrono::milliseconds const timeout_k(100);
+	cout << "called once by thread " << thread_id << endl;
+} // _call_once_hf
+
+static void _timed_work_hf(std::once_flag *the_flag, std::mutex *cout_guard, std::timed_mutex *mutex)
+{
+	std::chrono::milliseconds const timeout_k(30);
+
+	std::call_once(*the_flag, _call_once_hf, std::this_thread::get_id());
 
 	for(auto ii = 0; ii < 5; ++ii)
 	{
 		if(mutex->try_lock_for(timeout_k))
 		{
-			std::chrono::milliseconds const sleep_duration_k(250);
+			std::chrono::milliseconds const sleep_duration_k(70);
 			{
 				std::lock_guard<std::mutex> lock(*cout_guard);
 				cout << std::setw(7) << std::this_thread::get_id() << 
@@ -120,7 +127,7 @@ static void _timed_work_hf(std::mutex *cout_guard, std::timed_mutex *mutex)
 		} // try_lock_for success
 		else 
 		{
-			std::chrono::milliseconds const sleep_duration_k(100);
+			std::chrono::milliseconds const sleep_duration_k(30);
 			{
 				std::lock_guard<std::mutex> lock(*cout_guard);
 				cout << std::setw(7) << std::this_thread::get_id() << 
@@ -184,12 +191,14 @@ int main()
 	} // complex
 	
 	{ // timed_work
+		std::once_flag once_flag;
 		std::mutex cout_guard;
 		std::timed_mutex mutex;
 		thread_vec the_threads;
 
 		for(auto ii = 0; ii < 4; ++ii)
-			the_threads.push_back(std::thread(_timed_work_hf, &cout_guard, &mutex));
+			the_threads.push_back(std::thread(
+					_timed_work_hf, &once_flag, &cout_guard, &mutex));
 		for(auto &ii : the_threads)
 			ii.join();
 
