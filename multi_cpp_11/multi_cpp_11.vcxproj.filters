@@ -45,6 +45,9 @@
     <ClCompile Include="lesson4b.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lesson4c.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\multithread\bounded_buffer.h">

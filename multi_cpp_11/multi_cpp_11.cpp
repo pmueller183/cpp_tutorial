@@ -4,7 +4,7 @@
 
 #include "lessons.h"
 
-static std::string const _lesson_ndx_kf = "4b";
+static std::string const _lesson_ndx_kf = "4c";
 
 int main()
 {
@@ -24,5 +24,7 @@ int main()
 		lesson4a();
 	else if("4b" == _lesson_ndx_kf)
 		lesson4b();
+	else if("4c" == _lesson_ndx_kf)
+		lesson4c();
 
 } // main

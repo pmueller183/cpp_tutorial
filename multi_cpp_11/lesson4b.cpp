@@ -30,7 +30,7 @@ void lesson4b()
 			std::chrono::seconds(6), 25);
 
 	auto const my_sleep_k = std::chrono::seconds(1);
-	auto const timeout_k = std::chrono::milliseconds(0);
+	auto const timeout_k = std::chrono::milliseconds(0); // 0 means no waiting
 	auto const &ready_status = std::future_status::ready;
 	while(f0th.valid() || f1st.valid() || f2nd.valid())
 	{
