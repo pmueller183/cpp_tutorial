@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <thread>
+#include <mutex>
 #include <iostream>
 
 int const sleep_mlls_kf = 100;
@@ -18,12 +19,15 @@ static void _hello_hf()
 
 struct counter_sct
 {
-    int val_m;
-    counter_sct() : val_m(0){}
-    void increment()
-	 {
-        ++val_m;
-    }
+	std::mutex mutex_m;
+	int val_m;
+	counter_sct() : val_m(0){}
+	void increment()
+	{
+		mutex_m.lock();
+		++val_m;
+		mutex_m.unlock();
+	}
 }; // counter_sct
 
 void _counter_hf(counter_sct *val)
