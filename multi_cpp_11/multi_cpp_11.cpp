@@ -72,9 +72,29 @@ void _counter_hf(counter_sct *val)
 	}
 } // _counter_hf
 
+struct cpx_sct
+{
+	std::mutex mutex_m;
+	int val_m;
+
+	cpx_sct() : val_m(100) {}
+
+	void mul(int x)
+	{
+		std::lock_guard<std::mutex> lock(mutex_m);
+		val_m *= x;
+	} // mul
+
+	void div(int x)
+	{
+		std::lock_guard<std::mutex> lock(mutex_m);
+		val_m /= x;
+	} // div
+}; // cpx_sct
+
 int main()
 {
-	{
+	{ // startup
 		thread_vec func_threads, lambda_threads;
 		for(auto ii = 0; ii < 5; ++ii)
 		{
@@ -91,7 +111,8 @@ int main()
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_kf));
 		cout << "hopefully done\n\n";
 	} // startup
-	{
+
+	{ // counter
 		thread_vec the_threads;
 		counter_sct the_counter;
 		for(auto ii = 0; ii < 5; ++ii)
@@ -104,6 +125,17 @@ int main()
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_kf));
 		cout << "hopefully done\n\n";
 	} // counter
+
+	{ // complex
+		cpx_sct the_cpx;
+
+		the_cpx.mul(10);
+		the_cpx.div(20);
+		cout << "the_cpx " << the_cpx.val_m << endl;
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_kf));
+		cout << "hopefully done\n\n";
+	} // complex
 
 } // main
 
