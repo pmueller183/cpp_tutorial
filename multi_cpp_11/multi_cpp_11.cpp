@@ -28,8 +28,11 @@ struct counter_sct
 
 void _counter_hf(counter_sct *val)
 {
-	for(int ii = 0; ii < 100; ++ii)
+	for(int ii = 0; ii < 20; ++ii)
+	{
 		val->increment();
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
 } // _counter_hf
 
 int main()
