@@ -8,6 +8,7 @@
 #include <mutex>
 
 #include <iostream>
+#include <iomanip>
 using std::cout;
 using std::endl;
 
@@ -53,7 +54,7 @@ struct counter_sct
 	}
 }; // counter_sct
 
-void _counter_hf(counter_sct *val)
+static void _counter_hf(counter_sct *val)
 {
 	std::mt19937 rnd_eng;
 	_make_rnd_eng_hf(&rnd_eng);
@@ -98,6 +99,37 @@ struct cpx_sct
 		div(y);
 	} // muldiv
 }; // cpx_sct
+
+static void _timed_work_hf(std::mutex *cout_guard, std::timed_mutex *mutex)
+{
+	std::chrono::milliseconds const timeout_k(100);
+
+	for(auto ii = 0; ii < 5; ++ii)
+	{
+		if(mutex->try_lock_for(timeout_k))
+		{
+			std::chrono::milliseconds const sleep_duration_k(250);
+			{
+				std::lock_guard<std::mutex> lock(*cout_guard);
+				cout << std::setw(7) << std::this_thread::get_id() << 
+						": do work with the mutex\n";
+			}
+			std::this_thread::sleep_for(sleep_duration_k);
+			mutex->unlock();
+			std::this_thread::sleep_for(sleep_duration_k);
+		} // try_lock_for success
+		else 
+		{
+			std::chrono::milliseconds const sleep_duration_k(100);
+			{
+				std::lock_guard<std::mutex> lock(*cout_guard);
+				cout << std::setw(7) << std::this_thread::get_id() << 
+						": do work without mutex\n";
+			}
+			std::this_thread::sleep_for(sleep_duration_k);
+		} // else try_lock_for failed
+	} // while(true)
+} // _timed_work_hf
 
 int main()
 {
@@ -150,6 +182,20 @@ int main()
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_kf));
 		cout << "hopefully done\n\n";
 	} // complex
+	
+	{ // timed_work
+		std::mutex cout_guard;
+		std::timed_mutex mutex;
+		thread_vec the_threads;
+
+		for(auto ii = 0; ii < 4; ++ii)
+			the_threads.push_back(std::thread(_timed_work_hf, &cout_guard, &mutex));
+		for(auto &ii : the_threads)
+			ii.join();
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_kf));
+		cout << "hopefully done\n\n";
+	} // timed_work
 
 } // main
 
