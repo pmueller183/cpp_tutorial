@@ -12,6 +12,8 @@
 using std::cout;
 using std::endl;
 
+#include "bounded_buffer.h"
+
 static void _make_rnd_eng_hf(std::mt19937 *rnd_eng)
 {
 	std::random_device rnd_dev;

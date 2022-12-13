@@ -18,5 +18,13 @@
     <ClCompile Include="multi_cpp_11.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="bounded_buffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\multithread\bounded_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
