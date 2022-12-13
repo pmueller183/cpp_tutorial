@@ -27,6 +27,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "includes", "includes", "{BB
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "functor", "functor\functor.vcxproj", "{3F5180C3-D066-4AC0-93A1-3104CA86B995}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multi_cpp_11", "multi_cpp_11\multi_cpp_11.vcxproj", "{58632DF6-F9DB-43AE-9971-857482E9A70A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -61,6 +63,10 @@ Global
 		{3F5180C3-D066-4AC0-93A1-3104CA86B995}.Debug|x64.Build.0 = Debug|x64
 		{3F5180C3-D066-4AC0-93A1-3104CA86B995}.Release|x64.ActiveCfg = Release|x64
 		{3F5180C3-D066-4AC0-93A1-3104CA86B995}.Release|x64.Build.0 = Release|x64
+		{58632DF6-F9DB-43AE-9971-857482E9A70A}.Debug|x64.ActiveCfg = Debug|x64
+		{58632DF6-F9DB-43AE-9971-857482E9A70A}.Debug|x64.Build.0 = Debug|x64
+		{58632DF6-F9DB-43AE-9971-857482E9A70A}.Release|x64.ActiveCfg = Release|x64
+		{58632DF6-F9DB-43AE-9971-857482E9A70A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

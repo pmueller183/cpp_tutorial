@@ -1,4 +1,5 @@
 multithread:
 	future
 
-project functors
+lambdas
+
