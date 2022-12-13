@@ -32,9 +32,6 @@ static int _uniform_int_hf(rnd_generator &the_rnd, int min, int max)
 	return distribution(the_rnd);
 } // _uniform_int_hf
 
-
-int const sleep_mlls_kf = 100;
-
 struct counter_sct
 {
 	std::mutex mutex_m;
@@ -81,9 +78,7 @@ void lesson1st()
 	cout << "val " << the_counter.val_m << "; exceptions caught " <<
 			the_counter.num_exceptions_m << endl;
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_kf));
+	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
 	cout << "hopefully done\n\n";
 
 } // lesson1st
-
-

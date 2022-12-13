@@ -4,13 +4,13 @@
 
 #include "lessons.h"
 
-static std::string const _lesson_ndx_kf = "0";
+static std::string const _lesson_ndx_kf = "1st";
 
 int main()
 {
-	if("0" == _lesson_ndx_kf)
+	if("0th" == _lesson_ndx_kf)
 		lesson0th();
-	else if("1" == _lesson_ndx_kf)
+	else if("1st" == _lesson_ndx_kf)
 		lesson1st();
 	else if("2a" == _lesson_ndx_kf)
 		lesson2a();
