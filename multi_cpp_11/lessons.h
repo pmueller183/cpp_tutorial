@@ -10,4 +10,6 @@ void lesson2a();
 void lesson2b();
 void lesson2c();
 void lesson3rd();
-void lesson4th();
+void lesson4a();
+void lesson4b();
+void lesson4c();

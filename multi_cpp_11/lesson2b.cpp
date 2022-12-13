@@ -70,5 +70,4 @@ void lesson2b()
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_ke));
 	cout << "lesson2b hopefully done\n";
-
 } // lesson2b
