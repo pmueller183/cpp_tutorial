@@ -11,7 +11,7 @@ using std::cout;
 using std::endl;
 
 typedef std::vector<int> int_vec;
-typedef std::list<int> int_lst;
+typedef std::list  <int> int_lst;
 
 struct abs_value_ftr
 {
@@ -24,7 +24,8 @@ class line_ftr
 private:
 	double m, b;
 public:
-	line_ftr(double slope = 1.0, double intercept = 0.0): m(slope), b(intercept){};
+	line_ftr(double slope = 1.0, double intercept = 0.0):
+			m(slope), b(intercept){};
 	inline double operator()(double exx) {return m * exx + b;}
 }; // line_ftr
 
@@ -211,13 +212,18 @@ int main()
 		print_agg(the_vec, 4);
 
 		the_vec.push_back(1);
+		the_vec.push_back(7);
 		the_vec.insert(the_vec.begin(), -1);
 		backup_vec = the_vec;
 
 		print_agg(the_vec, 4);
 		cout << "  has " << 
 				_count_em_hf(the_vec, std::bind2nd(std::less<int>(),3)) <<
-				" entries less than 3\n";
+				" entries less than 3 ";
+		cout << "and " << 
+				_count_em_hf(the_vec, 
+						std::not1(std::bind2nd(std::less<int>(),3))) <<
+				" entries ge than 3\n";
 
 		// this remove values less than 3
 		// if I have to write a comment, it's too complicated
@@ -256,13 +262,18 @@ int main()
 		print_agg(the_vec, 4);
 
 		the_vec.push_back(1);
+		the_vec.push_back(7);
 		the_vec.insert(the_vec.begin(), -1);
 		backup_vec = the_vec;
 
 		print_agg(the_vec, 4);
 		cout << "  has " << 
 				_count_em_hf(the_vec, std::bind2nd(std::less<int>(),3)) <<
-				" entries less than 3\n";
+				" entries less than 3 ";
+		cout << "and " << 
+				_count_em_hf(the_vec, 
+						std::not1(std::bind2nd(std::less<int>(),3))) <<
+				" entries ge than 3\n";
 
 		// this remove values less than 3
 		// if I have to write a comment, it's too complicated
