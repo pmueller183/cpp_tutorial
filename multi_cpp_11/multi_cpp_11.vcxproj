@@ -144,10 +144,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="bounded_buffer.cpp" />
+    <ClCompile Include="lesson0th.cpp" />
     <ClCompile Include="multi_cpp_11.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\multithread\bounded_buffer.h" />
+    <ClInclude Include="lessons.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

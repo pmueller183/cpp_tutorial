@@ -1,5 +1,9 @@
 //345678911234567892123456789312345678941234567895123456789612345678971234567898123456-
 
+#include "lessons.h"
+
+static int const _lesson_ndx_kf = 0;
+
 #include <vector>
 
 #include <random>
@@ -35,11 +39,6 @@ static int _uniform_int_hf(rnd_generator &the_rnd, int min, int max)
 int const sleep_mlls_kf = 100;
 
 typedef std::vector<std::thread> thread_vec;
-
-static void _hello_hf()
-{
-	cout << "func thread " << std::this_thread::get_id() << endl;;
-} // _hello_hf
 
 struct counter_sct
 {
@@ -170,24 +169,9 @@ void _producer_hf(int ndx, std::mutex *cout_guard, bounded_buffer_cls *buffer)
 
 int main()
 {
-	{ // startup
-		thread_vec func_threads, lambda_threads;
-		for(auto ii = 0; ii < 5; ++ii)
-		{
-			func_threads.push_back(std::thread(_hello_hf));
-			lambda_threads.push_back(std::thread(([](){
-					cout << "lambda thread " << std::this_thread::get_id() << endl;}))
-					);
-		} // for ii
-		for(auto &ii: lambda_threads)
-			ii.join();
-		for(auto &ii: func_threads)
-			ii.join();
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(sleep_mlls_kf));
-		cout << "hopefully done\n\n";
-	} // startup
-
+	if(0 == _lesson_ndx_kf)
+		lesson0th();
+#if 0
 	{ // counter
 		thread_vec the_threads;
 		counter_sct the_counter;
@@ -249,6 +233,7 @@ int main()
 		c0.join(); c1.join(); c2.join(); p0.join(); p1.join();
 		
 	} // consumer / producer
+#endif
 
 } // main
 

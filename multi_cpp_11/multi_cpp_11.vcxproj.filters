@@ -21,9 +21,15 @@
     <ClCompile Include="bounded_buffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lesson0th.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\multithread\bounded_buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lessons.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

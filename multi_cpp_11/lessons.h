@@ -1,0 +1,9 @@
+//345678911234567892123456789312345678941234567895123456789612345678971234567898123456-
+
+#pragma once
+
+void lesson0th();
+void lesson1st();
+void lesson2nd();
+void lesson3rd();
+void lesson4th();
