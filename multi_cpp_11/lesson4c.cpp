@@ -36,6 +36,8 @@ static int _future_func_hf(duration_type const &duration, int rv)
 	return rv;
 } // _future_func_hf
 
+static bool _is_valid_hf(std::future<int> const &func) { return func.valid(); }
+
 void lesson4c()
 {
 	cout << "lesson4c:\n";
@@ -49,7 +51,7 @@ void lesson4c()
 
 	for(auto ii = 0; ii < 10; ++ii)
 	{
-		int const duration_mlls = _uniform_int_hf(rnd_eng, 50, 1500);
+		int const duration_mlls = _uniform_int_hf(rnd_eng, 50, 2500);
 		auto the_duration = std::chrono::milliseconds(duration_mlls);
 		the_futures.emplace_back(std::async(
 				std::launch::async, _future_func_hf, the_duration, ii));
@@ -60,8 +62,7 @@ void lesson4c()
 	auto const &ready_status = std::future_status::ready;
 	auto const timeout_k = std::chrono::milliseconds(10); // 0 means no waiting
 
-	while(std::any_of(the_futures.begin(), the_futures.end(), 
-			[](std::future<int>&f){return f.valid();}))
+	while(std::any_of(the_futures.begin(), the_futures.end(), _is_valid_hf))
 	{
 		for(auto &ii : the_futures)
 		{
