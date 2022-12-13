@@ -11,14 +11,22 @@ using std::endl;
 
 static void _hello_hf()
 {
-	cout << "Hello from thread " << std::this_thread::get_id() << endl;;
+	cout << "func thread " << std::this_thread::get_id() << endl;;
 } // _hello_hf
 
 int main()
 {
-	thread_vec the_threads;
+	thread_vec func_threads, lambda_threads;
 	for(auto ii = 0; ii < 5; ++ii)
-		the_threads.push_back(std::thread(_hello_hf));
-	for(auto &ii: the_threads)
+	{
+		func_threads.push_back(std::thread(_hello_hf));
+		lambda_threads.push_back(std::thread(([](){
+            cout << "lambda thread " << std::this_thread::get_id() << endl;}))
+				);
+	} // for ii
+	for(auto &ii: lambda_threads)
+		ii.join();
+	for(auto &ii: func_threads)
 		ii.join();
 } // main
+
