@@ -145,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="bounded_buffer.cpp" />
     <ClCompile Include="lesson0th.cpp" />
+    <ClCompile Include="lesson1st.cpp" />
     <ClCompile Include="multi_cpp_11.cpp" />
   </ItemGroup>
   <ItemGroup>

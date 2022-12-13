@@ -2,7 +2,7 @@
 
 #include "lessons.h"
 
-static int const _lesson_ndx_kf = 0;
+static int const _lesson_ndx_kf = 1;
 
 #include <vector>
 
@@ -10,6 +10,7 @@ static int const _lesson_ndx_kf = 0;
 
 #include <thread>
 #include <mutex>
+typedef std::vector<std::thread> thread_vec;
 typedef std::lock_guard<std::mutex> lock_mutex;
 
 #include <iostream>
@@ -37,43 +38,6 @@ static int _uniform_int_hf(rnd_generator &the_rnd, int min, int max)
 
 
 int const sleep_mlls_kf = 100;
-
-typedef std::vector<std::thread> thread_vec;
-
-struct counter_sct
-{
-	std::mutex mutex_m;
-	int val_m;
-	int num_exceptions_m;
-	counter_sct() : val_m(0), num_exceptions_m(0) {}
-	template<class rnd_generator>
-	void increment(rnd_generator &the_rnd)
-	{
-		std::lock_guard<std::mutex> lock(mutex_m);
-		if(0 == _uniform_int_hf(the_rnd, 0, 8))
-			throw std::exception("ha ha failed");
-		++val_m;
-	}
-}; // counter_sct
-
-static void _counter_hf(counter_sct *val)
-{
-	std::mt19937 rnd_eng;
-	_make_rnd_eng_hf(&rnd_eng);
-
-	for(int ii = 0; ii < 20; ++ii)
-	{
-		try
-		{
-			val->increment(rnd_eng);
-			std::this_thread::sleep_for(std::chrono::milliseconds(1));
-		}
-		catch(std::exception &)
-		{
-			++val->num_exceptions_m;
-		}
-	}
-} // _counter_hf
 
 struct cpx_sct
 {
@@ -171,6 +135,8 @@ int main()
 {
 	if(0 == _lesson_ndx_kf)
 		lesson0th();
+	else if(1 == _lesson_ndx_kf)
+		lesson1st();
 #if 0
 	{ // counter
 		thread_vec the_threads;
