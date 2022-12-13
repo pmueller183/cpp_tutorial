@@ -57,23 +57,30 @@ static bool _lt_3_hf(int val)
 }
 
 template <class agg_cls, typename fptr>
-static void _erase_bool_hf(agg_cls *the_vec, fptr func)
+static void _erase_bool_hf(agg_cls *the_agg, fptr bool_func)
 {
 	typename agg_cls::iterator ii, prev;
-	ii = the_vec->end();
+	ii = the_agg->end();
 	--ii;
-	while(ii != the_vec->begin())
+	while(ii != the_agg->begin())
 	{
 		prev = ii;
 		--prev;
-		if(func(*ii))
-			the_vec->erase(ii);
+		if(bool_func(*ii))
+			the_agg->erase(ii);
 		ii = prev;
 	}
-	if(func(*ii))
-		the_vec->erase(ii);
+	if(bool_func(*ii))
+		the_agg->erase(ii);
 
 } // _erase_bool_hf
+
+template <class agg_cls, typename fptr>
+static int _count_em_hf(agg_cls const &the_agg, fptr bool_func)
+{
+	return static_cast<int> (
+			std::count_if(the_agg.begin(), the_agg.end(), bool_func));
+} // _count_em_hf
 
 int main()
 {
@@ -207,6 +214,11 @@ int main()
 		the_vec.insert(the_vec.begin(), -1);
 		backup_vec = the_vec;
 
+		print_agg(the_vec, 4);
+		cout << "  has " << 
+				_count_em_hf(the_vec, std::bind2nd(std::less<int>(),3)) <<
+				" entries less than 3\n";
+
 		// this remove values less than 3
 		// if I have to write a comment, it's too complicated
 		cout << "using overly complicated expression:\n";
@@ -235,7 +247,7 @@ int main()
 	{ // bind2nd
 		cout << "int_lst bind2nd\n";
 		int const size_k = 6;
-		int_vec the_vec, backup_vec;
+		int_lst the_vec, backup_vec;
 		for(auto ii = 0; ii < size_k; ++ii)
 			the_vec.push_back(ii);
 		print_agg(the_vec, 4);
@@ -246,6 +258,11 @@ int main()
 		the_vec.push_back(1);
 		the_vec.insert(the_vec.begin(), -1);
 		backup_vec = the_vec;
+
+		print_agg(the_vec, 4);
+		cout << "  has " << 
+				_count_em_hf(the_vec, std::bind2nd(std::less<int>(),3)) <<
+				" entries less than 3\n";
 
 		// this remove values less than 3
 		// if I have to write a comment, it's too complicated
