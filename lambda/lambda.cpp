@@ -1,8 +1,11 @@
 //345678911234567892123456789312345678941234567895123456789612345678971234567898123456-
 
+
 #include <iostream>
 using std::cout;
 using std::endl;
+
+#include <string>
 
 #include <iterator>
 #include <vector>
@@ -13,17 +16,18 @@ typedef std::vector<int> int_vec;
 
 void _print_vec_hf(int_vec const &the_vec)
 {
-#if 1
 	// lambda
 	std::for_each(the_vec.cbegin(), the_vec.cend(),
 			[](int ii) {cout << ii << " ";}
 			);
-#else
-	// old
-	for(auto const &ii : the_vec)
-		cout << ii << " ";
-#endif
 	cout << endl;
+} // _print_vec_hf
+
+void _print_vec_hf(std::string const &prepend, int_vec const &the_vec)
+{
+	if(prepend != "")
+		cout << prepend << " ";
+	_print_vec_hf(the_vec);
 } // _print_vec_hf
 
 static double _product_hf(double ii, double jj)
@@ -81,6 +85,43 @@ int main()
 	auto square_fptr = [](int val) {return val * val;};
 
 	cout << "square of 5 is : " << square_fptr(5) << endl;
+
+	int_vec v0th = { 3, 1, 7, 9};
+	int_vec v1st = {10, 2, 7, 16, 9};
+
+	_print_vec_hf("v0th", v0th);
+	_print_vec_hf("v1st", v1st);
+
+	//  access v0th and v1st by reference
+	auto pushinto = [&] (int m)
+	{
+		v0th.push_back(m);
+		v1st.push_back(m);
+	}; // pushinto
+
+	pushinto(20);
+
+	_print_vec_hf("v0th", v0th);
+	_print_vec_hf("v1st", v1st);
+
+	// access v1 by copy
+	auto show_arrays = [=](bool do_show_names)
+	{
+		if(do_show_names)
+			cout << "v0th: ";
+		for(auto ii = v0th.begin(); ii != v0th.end(); ++ii)
+			cout << *ii << " ";
+		cout << endl;
+		if(do_show_names)
+			cout << "v1st: ";
+		for(auto ii = v1st.begin(); ii != v1st.end(); ++ii)
+			cout << *ii << " ";
+		cout << endl;
+	}; // show_arrays
+
+
+	show_arrays(true);
+	show_arrays(false);
 
 	return 0;
 } // main
