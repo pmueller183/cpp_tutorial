@@ -42,10 +42,17 @@ int main()
 	// non-increasing order.  Compiler can make out return type as
 	// bool, but shown here just for explanation.
 	std::sort(the_vec.begin(), the_vec.end(), 
-			[](int a, int b) -> bool { return a > b; }
+			[](int ii, int jj) -> bool { return ii > jj; }
 			);
-
 	_print_vec_hf(the_vec);
+
+	// function to count numbers greater than or equal to 5
+	auto count_5 = std::count_if(
+			the_vec.begin(), the_vec.end(),
+			[](int ii) {return ii >= 5; }
+			);
+	cout << "The number of elements greater than or equal to 5 is " <<
+			count_5 << endl;
 
 	return 0;
 } // main
