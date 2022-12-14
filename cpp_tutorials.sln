@@ -29,6 +29,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "functor", "functor\functor.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multi_cpp_11", "multi_cpp_11\multi_cpp_11.vcxproj", "{58632DF6-F9DB-43AE-9971-857482E9A70A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lambda", "lambda\lambda.vcxproj", "{F592FA10-5C18-4248-B60B-F6E3E8B5F8C6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -67,6 +69,10 @@ Global
 		{58632DF6-F9DB-43AE-9971-857482E9A70A}.Debug|x64.Build.0 = Debug|x64
 		{58632DF6-F9DB-43AE-9971-857482E9A70A}.Release|x64.ActiveCfg = Release|x64
 		{58632DF6-F9DB-43AE-9971-857482E9A70A}.Release|x64.Build.0 = Release|x64
+		{F592FA10-5C18-4248-B60B-F6E3E8B5F8C6}.Debug|x64.ActiveCfg = Debug|x64
+		{F592FA10-5C18-4248-B60B-F6E3E8B5F8C6}.Debug|x64.Build.0 = Debug|x64
+		{F592FA10-5C18-4248-B60B-F6E3E8B5F8C6}.Release|x64.ActiveCfg = Release|x64
+		{F592FA10-5C18-4248-B60B-F6E3E8B5F8C6}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
