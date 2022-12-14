@@ -4,7 +4,40 @@
 using std::cout;
 using std::endl;
 
+#include <vector>
+typedef std::vector<int> int_vec;
+
+#include <algorithm> // for_each
+
+void _print_vec_hf(int_vec const &the_vec)
+{
+#if 1
+	// lambda
+	std::for_each(the_vec.begin(), the_vec.end(),
+			[](int ii) { cout << ii << " "; }
+			);
+#else
+	// old
+	for(auto const &ii : the_vec)
+		cout << ii << " ";
+#endif
+	cout << endl;
+} // _print_vec_hf
+
 int main()
 {
-	cout << "Hello World!\n";
-}
+	int_vec the_vec = {4, 1, 3, 5, 2, 3, 1, 7};
+	_print_vec_hf(the_vec);
+
+	// below snippet find first number greater than 4
+	// find_if searches for an element for which
+	// function (third argument) returns true
+
+	int_vec::const_iterator this_one = std::find_if(
+			the_vec.begin(), the_vec.end(), 
+					[](int ii) { return ii > 4; }
+					);
+	cout << "First number greater than 4 is : " << *this_one << endl;
+
+	return 0;
+} // main
