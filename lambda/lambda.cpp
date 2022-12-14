@@ -32,12 +32,20 @@ int main()
 	// below snippet find first number greater than 4
 	// find_if searches for an element for which
 	// function (third argument) returns true
-
 	int_vec::const_iterator this_one = std::find_if(
 			the_vec.begin(), the_vec.end(), 
 					[](int ii) { return ii > 4; }
 					);
 	cout << "First number greater than 4 is : " << *this_one << endl;
+
+	// function to sort vector; lambda expression is for sorting in
+	// non-increasing order.  Compiler can make out return type as
+	// bool, but shown here just for explanation.
+	std::sort(the_vec.begin(), the_vec.end(), 
+			[](int a, int b) -> bool { return a > b; }
+			);
+
+	_print_vec_hf(the_vec);
 
 	return 0;
 } // main
