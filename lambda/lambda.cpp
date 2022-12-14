@@ -4,17 +4,18 @@
 using std::cout;
 using std::endl;
 
+#include <iterator>
 #include <vector>
 typedef std::vector<int> int_vec;
 
 #include <algorithm> // for_each
-#include <iterator>
+#include <numeric> // accumulate
 
 void _print_vec_hf(int_vec const &the_vec)
 {
 #if 1
 	// lambda
-	std::for_each(the_vec.begin(), the_vec.end(),
+	std::for_each(the_vec.cbegin(), the_vec.cend(),
 			[](int ii) {cout << ii << " ";}
 			);
 #else
@@ -24,6 +25,11 @@ void _print_vec_hf(int_vec const &the_vec)
 #endif
 	cout << endl;
 } // _print_vec_hf
+
+static double _product_hf(double ii, double jj)
+{
+	return static_cast<double>(ii * jj);
+}
 
 int main()
 {
@@ -57,12 +63,24 @@ int main()
 
 	_print_vec_hf(the_vec);
 	// function for removing duplicate element (note: std::unique needs 
-	// sorting for all duplicates next to each other
+	// sorting for all duplicates next to each other)
+	// (note: need to resize afterwards)
 	the_vec_ptr = std::unique(the_vec.begin(), the_vec.end(),
 			[](int ii, int jj) { return ii == jj; }
 			);
 	the_vec.resize(std::distance(the_vec.cbegin(), the_vec_ptr));
 	_print_vec_hf(the_vec);
+
+	// accumulate function accumulate the container on the basis of
+	// function provided as third argument
+	auto product = std::accumulate(the_vec.begin(), the_vec.end(), 1.0,
+			[](double ii, double jj) { return ii * jj; });
+	cout << "sizeof(product) " << sizeof(product) << " product is " << product << endl;
+
+	// We can also access function by storing this into variable
+	auto square_fptr = [](int val) {return val * val;};
+
+	cout << "square of 5 is : " << square_fptr(5) << endl;
 
 	return 0;
 } // main
