@@ -188,7 +188,7 @@ int main()
 
 		min_val = 5;
 		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
-				[min_val](int ii){return ii > min_val;});
+				[min_val](int ii){return _gt_hf(ii, min_val);});
 		cout << "aa in v0th, first number greater than " << min_val << " is " << 
 				*int_vec_ptr << endl;
 
@@ -198,11 +198,6 @@ int main()
 
 		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), gt_cpp_17);
 		cout << "ac in v0th, first number greater than " << min_val << " is " << 
-				*int_vec_ptr << endl;
-
-		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
-				[min_val](int ii){return _gt_hf(ii, min_val);});
-		cout << "ae in v0th, first number greater than " << min_val << " is " << 
 				*int_vec_ptr << endl;
 
 		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
