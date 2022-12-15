@@ -49,9 +49,18 @@ struct _gt_bf : std::binary_function<int, int, bool>
 	}
 }; // _gt_bf
 
+struct _gt_sct
+{
+	bool operator()(int a, int b) const
+	{
+		return a > b;
+	}
+}; // _gt_sct
+
 int main()
 {
 	_gt_bf gt_bf;
+	_gt_sct gt_sct;
 
 	int_vec the_vec = {4, 1, 3, 5, 3, 7, 2, 3, 1, 7};
 	int_vec::const_iterator int_vec_ptr;
@@ -155,10 +164,23 @@ int main()
 		cout << "is 5 > 3 " << (gt_bf(5, 3) ? "true" : "false") << endl;
 		cout << endl;
 
+		cout << "using gt_sct:" << endl;
+		cout << "is 3 > 5 " << (gt_sct(3, 5) ? "true" : "false") << endl;
+		cout << "is 3 > 3 " << (gt_sct(3, 3) ? "true" : "false") << endl;
+		cout << "is 5 > 3 " << (gt_sct(5, 3) ? "true" : "false") << endl;
+		cout << endl;
+
+		auto gt = [&p_min_val = (int const &)(min_val)](int ii)
+				{return ii > p_min_val;};
+
 		min_val = 5;
 		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
 				[min_val](int ii){return ii > min_val;});
-		cout << "a in v0th, first number greater than " << min_val << " is " << 
+		cout << "aa in v0th, first number greater than " << min_val << " is " << 
+				*int_vec_ptr << endl;
+
+		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), gt);
+		cout << "ab in v0th, first number greater than " << min_val << " is " << 
 				*int_vec_ptr << endl;
 
 		// like this one best, 'cause I can pass a real function to it
@@ -175,20 +197,20 @@ int main()
 		cout << "d in v0th, first number greater than " << min_val << " is " << 
 				*int_vec_ptr << endl;
 
+		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
+				std::bind(_gt_sct(), _1, min_val));
+		cout << "e in v0th, first number greater than " << min_val << " is " << 
+				*int_vec_ptr << endl;
+
 		min_val = 12;
 		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
 				[min_val](int ii){return ii > min_val;});
 		cout << "in v0th, first number greater than " << min_val << " is " << 
 				*int_vec_ptr << endl;
-	} // using std::placeholders::_1
-
-	{
-		int const min_val = 5;
-		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
-				std::bind(_gt_hf, std::placeholders::_1, min_val));
+		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), gt);
 		cout << "in v0th, first number greater than " << min_val << " is " << 
 				*int_vec_ptr << endl;
-	}
+	} // using std::placeholders::_1
 
 	return 0;
 } // main
