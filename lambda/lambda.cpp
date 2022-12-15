@@ -170,8 +170,20 @@ int main()
 		cout << "is 5 > 3 " << (gt_sct(5, 3) ? "true" : "false") << endl;
 		cout << endl;
 
-		auto gt = [&p_min_val = (int const &)(min_val)](int ii)
-				{return ii > p_min_val;};
+		// this gets the current value of min_val by const reference
+		// this reads changes in main program, but prevents lambda
+		// from changing it
+		// I think you need C++14 for this
+		auto gt_cpp_14 = [&p_min_val = static_cast<int const &>(min_val)](int ii)
+				{return _gt_hf(ii, p_min_val);};
+				//{p_min_val = 14; return _gt_hf(ii, p_min_val);}; // compiler error
+				//{  min_val = 14; return _gt_hf(ii, p_min_val);}; // compiler error
+
+		// This does the same thing with std::as_const, C++17 (?)
+		auto gt_cpp_17 = [&p_min_val = std::as_const(min_val)](int ii)
+				{return _gt_hf(ii, p_min_val);};
+				//{p_min_val = 14; return _gt_hf(ii, p_min_val);}; // compiler error
+				//{  min_val = 14; return _gt_hf(ii, p_min_val);}; // compiler error
 
 		min_val = 5;
 		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
@@ -179,11 +191,19 @@ int main()
 		cout << "aa in v0th, first number greater than " << min_val << " is " << 
 				*int_vec_ptr << endl;
 
-		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), gt);
+		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), gt_cpp_14);
 		cout << "ab in v0th, first number greater than " << min_val << " is " << 
 				*int_vec_ptr << endl;
 
-		// like this one best, 'cause I can pass a real function to it
+		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), gt_cpp_17);
+		cout << "ac in v0th, first number greater than " << min_val << " is " << 
+				*int_vec_ptr << endl;
+
+		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
+				[min_val](int ii){return _gt_hf(ii, min_val);});
+		cout << "ad in v0th, first number greater than " << min_val << " is " << 
+				*int_vec_ptr << endl;
+
 		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
 				std::bind(_gt_hf, _1, min_val));
 		cout << "b in v0th, first number greater than " << min_val << " is " << 
@@ -204,11 +224,14 @@ int main()
 
 		min_val = 12;
 		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
-				[min_val](int ii){return ii > min_val;});
-		cout << "in v0th, first number greater than " << min_val << " is " << 
+				[min_val](int ii){return _gt_hf(ii, min_val);});
+		cout << "ra: in v0th, first number greater than " << min_val << " is " << 
 				*int_vec_ptr << endl;
-		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), gt);
-		cout << "in v0th, first number greater than " << min_val << " is " << 
+		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), gt_cpp_14);
+		cout << "rb: in v0th, first number greater than " << min_val << " is " << 
+				*int_vec_ptr << endl;
+		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), gt_cpp_17);
+		cout << "rc: in v0th, first number greater than " << min_val << " is " << 
 				*int_vec_ptr << endl;
 	} // using std::placeholders::_1
 
