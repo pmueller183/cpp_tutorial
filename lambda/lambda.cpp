@@ -152,6 +152,7 @@ int main()
 		// cool, using follows scoping rules
 
 		int min_val;
+
 		cout << "using _gt_hf:" << endl;
 		cout << "is 3 > 5 " << (_gt_hf(3, 5) ? "true" : "false") << endl;
 		cout << "is 3 > 3 " << (_gt_hf(3, 3) ? "true" : "false") << endl;
@@ -201,7 +202,7 @@ int main()
 
 		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
 				[min_val](int ii){return _gt_hf(ii, min_val);});
-		cout << "ad in v0th, first number greater than " << min_val << " is " << 
+		cout << "ae in v0th, first number greater than " << min_val << " is " << 
 				*int_vec_ptr << endl;
 
 		int_vec_ptr = std::find_if(v0th.begin(), v0th.end(), 
